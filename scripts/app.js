@@ -408,7 +408,7 @@ window.gdd = function () {
                                 } else {
                                     //alert("TEST NOTICE: DeviceID is different. Updating Server: " + localDeviceId + " vs " + latestDeviceId)
 
-                                    var data = { "deviceId": latestDeviceId, "osType": osType }
+                                    var data = { "deviceId": latestDeviceId, "osType": osType,"personId":gdd.thisPerson.id() }
                                     callApi(
                                         "Security/UpdateUsersDeviceID",
                                         "GET",
@@ -1013,7 +1013,7 @@ window.gdd = function () {
         },
         phoneGap: {
             onDeviceReady: function () {
-                alert("Device ready fired")
+               // alert("Device ready fired")
                 try {
                   deviceIsReady = true;
 
