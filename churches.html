@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Churches</title>
+
+</head>
+<body>
+
+
+
+    <div data-role="page" id="pg_churches">
+
+        <div class="pageViewContent">
+
+
+            <div data-role="header">
+                <a href="#" class="ui-btn ui-btn-b ui-icon-home ui-btn-icon-notext headerMenuHome"></a>
+                <h1>Find a Church</h1>
+                <a href="#" class="ui-btn ui-btn-b ui-icon-refresh ui-btn-icon-notext refreshChurchView "></a>
+            </div><!-- /header -->
+
+            <div role="main" class="ui-content">
+
+                <div class="churchSubView churchSearch" data-bind="with:pages.churches.view">
+
+                    <div class="ui-bar ui-bar-h">
+                        <div style="text-align:center">Church Search</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                        Refine your search by selecting from any of the filters below and click 'Find Churches'
+
+                    </div>
+
+                    <div class="ui-field-contain churchSearchCountry churchSearchFilter">
+                        <!--<div>
+                            <label for="ddlGeoCountry">
+                                Filter by country
+                            </label>
+                        </div>-->
+                        <select id="ddlGeoCountry" data-theme="a" data-bind="options: countriesSearch,optionsCaption: 'Filter by country...'"></select>
+                        <a href="#" class="btnLinkMissingData">My country is not here</a>
+                    </div>
+
+                    <div class="ui-field-contain churchSearchRegion churchSearchFilter" style="display:none">
+                        <!--<div>
+                            <label for="ddlGeoRegion">
+                                Filter by region
+                            </label>
+                        </div>-->
+                        <select id="ddlGeoRegion" data-theme="a" data-bind="options: regionsSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Filter by region...'"></select>
+                        <a href="#" class="btnLinkMissingData">My region is not here</a>
+                    </div>
+
+                    <div class="ui-field-contain churchSearchCity churchSearchFilter" style="display:none">
+                        <!--<div>
+                            <label for="ddlGeoCity">
+                                Filter by city
+                            </label>
+                        </div>-->
+                        <select id="ddlGeoCity" data-theme="a" data-bind="options: citiesSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Filter by city...'"></select>
+                        <a href="#" class="btnLinkMissingData">My city is not here</a>
+                    </div>
+
+                    <button type="button" class="ui-btn ui-btn-b ui-btn-inline" id="btnFindChurches">Find Churches</button>
+                    <button type="button" class="ui-btn ui-btn-a ui-btn-inline" id="btnResetChurchSearch">Reset</button>
+
+                </div>
+
+                <div class="churchSubView churchList" style="display:none" data-bind="with:pages.churches.view">
+                    <div style="text-align:center">
+                        <a href="#" id="btnViewAllChurchesOnMap">Map View</a>
+                        <!--<button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-icon-location ui-btn-icon-left " >Map View</button>-->
+
+                    </div>
+                    <div data-bind="foreach:churchList">
+                        <div class="ui-bar ui-bar-h" style="text-align:center" data-bind="html:name">
+
+                        </div>
+
+                        <div class="ui-content ui-body-b" style=" font-size:small">
+                            <table width="100%" style="font-size:small">
+
+                                <tr>
+                                    <td><strong>Church Family:</strong></td>
+                                    <td>
+                                        <div data-bind="html:familyName"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Part Of:</strong></td>
+                                    <td>
+                                        <div data-bind="html:orgName"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Country</strong></td>
+                                    <td>
+                                        <div data-bind="html:geoCountry"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Region</strong></td>
+                                    <td>
+                                        <div data-bind="html:geoRegion"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Street</strong></td>
+                                    <td>
+                                        <div data-bind="html:geoStreetName"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Other Info</strong></td>
+                                    <td>
+                                        <div data-bind="html:geoOtherInfo"></div>
+                                    </td>
+                                </tr>
+                                <!--<tr>
+                                    <td><strong>Latitude:</strong></td>
+                                    <td>
+                                        <div data-bind="html:geoLat"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Longitude:</strong></td>
+                                    <td>
+                                        <div data-bind="html:geoLng"></div>
+                                    </td>
+                                </tr>-->
+                               
+                            </table>
+
+                            <div  style="text-align:center">
+                                <strong>Service Times</strong>
+                            </div>
+
+                            <div class="ui-content ui-body-h">
+                                <table width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Contact</th>
+                                            <th>Tel</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach:services">
+                                        <tr>
+                                            <td align="center">
+                                                <div data-bind="html:serviceTime"></div>
+                                            </td>
+                                            <td align="center">
+                                                <div data-bind="html:contactPerson"></div>
+                                            </td>
+                                            <td align="center">
+                                                <div data-bind="html:contactTelNumber"></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                            <div style="text-align:center">
+                                
+                                    <a href="#" class="btnViewChurchAddress" data-bind="attr:{'data-id':geoLat + '|' + geoLng + '|' + id}">View Address</a>
+                               
+
+                            </div>
+                        </div>
+
+                        
+
+
+                    </div>
+                </div>
+
+                <div class="churchSubView churchMap" style="display:none">
+                    <div style="text-align:center">
+                        <a href="#" class="refreshChurchView">List View</a>
+                        <!--<button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-icon-bullets ui-btn-icon-left refreshChurchView ">List View</button>-->
+                    </div>
+                    <div id='gmapsCanvas' class="gmapsCanvas" style="width: 100%; ">
+                        <div style="text-align:center; top:15px">
+                            <div>Loading mapping data...</div>
+                            <div><i>()If map does not load, ensure you are connected to the internet or try reload the page)</i></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="churchSubView missingChurch" style="display:none">
+                    <div class="ui-bar ui-bar-h">
+                        <div style="text-align:center">Can't Find Church</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="font-size:small">
+                        <p>There are three reasons why you may not be able to find your church in this list.</p>
+                        <ol>
+                            <li>
+                                <p>
+                                    Your church may have not been added to the database. Each church is responsible to add their congregation to
+                                    the database. Please contact your church office.
+                                </p>
+                            </li>
+                            <li>
+                                <p>The search filters you entered were to narrow. Try to expand your search to include your church.</p>
+                            </li>
+                            <li>
+                                <p>
+                                    This search uses Google's geo mapping tools. On rare occasions Google tags certain locations with different names
+                                    than what is expected. Your church office can change this.
+                                </p>
+                            </li>
+                        </ol>
+                        <div style="text-align:center">
+                            <button type="button" class="ui-btn ui-btn-b ui-btn-inline refreshChurchView ">Ok</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="churchSubView missingGeoStructure" style="display:none">
+                    <div class="ui-bar ui-bar-h">
+                        <div style="text-align:center">Geographic Data Missing</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="font-size:small">
+                        <p>
+                            All our geographic data is drawn from a dynamically generated list from Google's mapping services based on
+                            real time data from churches that have been added to the database. What does this mean?
+                        </p>
+                        <ol>
+                            <li>
+                                <p>
+                                    If the church you are looking for has NOT been added to the database the geographic data (country, regions, city)
+                                    will not be available here. Check with you church whether they have been added to the database.
+                                </p>
+                            </li>
+
+                            <li>
+                                <p>
+                                    This search uses Google's geo mapping tools. On rare occasions Google tags certain locations with different names
+                                    than what is expected. Your church office can change this.
+                                </p>
+                            </li>
+                        </ol>
+                        <div style="text-align:center">
+                            <button type="button" class="ui-btn ui-btn-b ui-btn-inline refreshChurchView ">Ok</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!--<div data-role="footer">
+
+            </div>-->
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+

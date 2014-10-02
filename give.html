@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Give</title>
+
+</head>
+<body>
+
+
+
+    <div data-role="page" id="pg_give">
+        <div class="pageViewContent">
+            <div data-role="header">
+                <a href="#" class="ui-btn ui-btn-b ui-icon-home ui-btn-icon-notext headerMenuHome"></a>
+                <h1>Give</h1>
+                <a href="#" class="ui-btn ui-btn-b ui-icon-refresh ui-btn-icon-notext " id="refreshPledgeTemplate"></a>
+            </div><!-- /header -->
+
+            <div role="main" class="ui-content">
+
+                <div class="giveSubView giveViewOne" style="display:none">
+
+                    <div class="ui-bar ui-bar-b">
+                        <div style="text-align:center">Pledge To</div>
+                    </div>
+                    <div class="ui-content ui-body-h" data-bind="html:pledgeTemplate.fundInfoHeader" style="text-align: center; font-size:small; margin-bottom:15px">
+
+                    </div>
+
+
+
+                    <div data-bind=" foreach: pledgeTemplate.funds">
+                        <div class="ui-bar ui-bar-a">
+                            <div style="text-align: center" data-bind="html: fundName"></div>
+                           
+                        </div>
+                        
+                            <div class="ui-content ui-body-h">
+                                <table width="100%">
+                                    <tr>
+                                        <td valign="top">
+                                            <div style="font-size:small" data-bind="html: fundTagLine"></div>
+                                        </td>
+                                        <td width="10px">
+                                            <a href="#" data-bind="attr: {'data-id': fundId + '|' + fundName}" class="ui-btn ui-btn-inline ui-icon-carat-r ui-btn-icon-notext ui-corner-all fundItem"></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+
+                   
+                </div>
+
+                <div class="giveSubView giveViewTwo" style="display:none">
+                    <div class="ui-bar ui-bar-b">
+                        <div style="text-align:center">Pledge Info</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                        Please complete the information below regarding your pledge to
+                        <strong><span class="selectedFundName"></span>.</strong>
+                    </div>
+                    <div class="ui-field-contain">
+                        <div>
+                            <label for="ddlPledgeType">
+                                How do you want to pledge
+                            </label>
+                        </div>
+                        <select id="ddlPledgeDebitDay" data-theme="a" data-bind="value:myPledge.type">
+                            <option value="1">My Credit Card</option>
+                            <option value="2">A Debit Order</option>
+                        </select>
+                    </div>
+
+
+                    <div class="ui-field-contain">
+                        <div>
+                            <label for="ddlPledgeFrequency">
+                                Choose pledge frequency
+                            </label>
+                        </div>
+                        <select id="ddlPledgeFrequency" data-theme="a" data-bind="options: pledgeTemplate.frequencies, value:myPledge.frequency"></select>
+                    </div>
+
+                    <div class="ui-field-contain">
+                        <div>
+                            <label for="ddlPledgeCcy">
+                                Choose currency
+                            </label>
+                        </div>
+                        <select id="ddlPledgeCcy" data-theme="a" data-bind="options: pledgeTemplate.ccy, value:myPledge.ccy"></select>
+                    </div>
+
+                    <div class="ui-field-contain">
+                        <div>
+                            <label for="txtPledgeAmount">
+                                How much do you want to pledge
+                            </label>
+                        </div>
+                        <input id="txtPledgeAmount" type="number" data-bind="value:myPledge.amount" />
+                    </div>
+
+                    <div class="ui-field-contain">
+                        <div>
+                            <label for="ddlPledgeDebitDay">
+                                Choose debit day
+                            </label>
+                        </div>
+                        <select id="ddlPledgeDebitDay" data-theme="a" data-bind="value:myPledge.debitDay">
+                            <option value="1">1st day of month</option>
+                            <option value="15">15th day of month</option>
+                            <option value="28">28th day of month</option>
+                        </select>
+                    </div>
+
+
+                    <button class="ui-btn ui-btn-a btnGiveGoTo1 ui-btn-inline">Back</button>
+                    <button class="ui-btn ui-btn-b btnGiveGoTo3 ui-btn-inline">Next</button>
+
+                </div>
+
+                <div class="giveSubView giveViewThree" style="display:none">
+                    <div class="giveViewCreditCard">
+
+                        <div class="ui-bar ui-bar-b">
+                            <div style="text-align:center">Credit Card Info</div>
+                        </div>
+                        <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                            Please provide the following information regarding the credit card that is to be debited for your pledge to
+                            <strong><span class="selectedFundName"></span>.</strong>
+                            
+                         </div>
+
+
+                        <div class="ui-field-contain">
+                            <div>
+                                <label for="txtCardHolder">
+                                    Name on card
+                                </label>
+                            </div>
+                            <input id="txtCardHolder" data-clear-btn="true" required value="" type="text" data-bind="value:myPledge.accName" />
+                        </div>
+
+
+                        <div class="ui-field-contain">
+                            <div>
+                                <label for="txtCardNumber">
+                                    Credit card number
+                                </label>
+                            </div>
+                            <input id="txtCardNumber" data-clear-btn="true" required value="" type="text" data-bind="value:myPledge.accNumber" />
+                        </div>
+
+
+
+
+
+                        <div class="ui-grid-a">
+
+
+
+                            <div class="ui-block-a">
+                                <div class="ui-field-contain" style="margin-right:3px">
+                                    <div>
+                                        <label for="txtCCCvc">
+                                            Cvc Number
+                                        </label>
+                                    </div>
+                                    <input id="txtCCCvc" required value="" type="number" data-bind="value:myPledge.cvc" />
+                                </div>
+
+
+                            </div>
+                            <div class="ui-block-b">
+                                <div class="ui-field-contain" style="margin-left:3px">
+                                    <div>
+                                        <label for="ddlCCType">
+                                            Credit Card Type
+                                        </label>
+                                    </div>
+                                    <select id="ddlCCType" data-mini="true" data-theme="a" data-bind="options: pledgeTemplate.ccTypes, value:myPledge.ccTypeId, optionsText:'value',optionsValue:'id'"></select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="ui-grid-a">
+
+                            <label>
+                                Expiry month and year
+                            </label>
+
+                            <div class="ui-block-a">
+                                <select id="ddlCCExpMonth" data-mini="true" data-bind="value:myPledge.expMonth">
+                                    <option value="01">Jan</option>
+                                    <option value="02">Feb</option>
+                                    <option value="03">Mar</option>
+                                    <option value="04">Apr</option>
+                                    <option value="05">May</option>
+                                    <option value="06">Jun</option>
+                                    <option value="07">Jul</option>
+                                    <option value="08">Aug</option>
+                                    <option value="09">Sep</option>
+                                    <option value="10">Oct</option>
+                                    <option value="11">Nov</option>
+                                    <option value="12">Dec</option>
+                                </select>
+
+
+                            </div>
+                            <div class="ui-block-b">
+                                <select id="ddlCCExpYear" data-mini="true" data-bind="value:myPledge.expYear">
+                                    <option value="2014">2014</option>
+                                    <option value="2015">2015</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                    </div>
+
+                    <div class="giveViewDebitOrder">
+
+                        <div class="ui-bar ui-bar-b">
+                            <div style="text-align:center">Debit Order Info</div>
+                        </div>
+                        <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                            Please provide the following information regarding the bank account that is to be debited for your pledge to
+                            <strong><span class="selectedFundName"></span>.</strong>
+                        </div>
+
+
+                        <div class="ui-field-contain">
+                            <div>
+                                <label for="txtAccountName">
+                                    Account Name
+                                </label>
+                            </div>
+                            <input id="txtAccountName" data-clear-btn="true" required value="" type="text" data-bind="value:myPledge.accName" />
+                        </div>
+
+
+                        <div class="ui-field-contain">
+                            <div>
+                                <label for="txtAccountNumberNumber">
+                                    Account Number
+                                </label>
+                            </div>
+                            <input id="txtAccountNumberNumber" data-clear-btn="true" required value="" type="text" data-bind="value:myPledge.accNumber" />
+                        </div>
+
+
+                        <div class="ui-field-contain">
+                            <div>
+                                <label for="txtBranchCode">
+                                    Branch Code
+                                </label>
+                            </div>
+                            <input id="txtBranchCode" required value="" type="text" data-bind="value:myPledge.branchCode" />
+                        </div>
+
+                        <div class="ui-field-contain" style="margin-left:3px">
+                            <div>
+                                <label for="ddlAccType">
+                                   Type of account
+                                </label>
+                            </div>
+                            <select id="ddlAccType"  data-theme="a" data-bind="options: pledgeTemplate.accTypes, value:myPledge.accTypeId, optionsText:'value',optionsValue:'id'"></select>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <button class="ui-btn ui-btn-a btnGiveGoTo2 ui-btn-inline">Back</button>
+                    <button type="button" class="ui-btn ui-btn-b ui-btn-inline" id="btnUpdatePledge">Save Pledge</button>
+
+                </div>
+
+                    
+
+                <div data-role="popup"  id="popupPledgeThankYouMessage" data-overlay-theme="b" data-theme="c" data-dismissible="false" style="max-width: 400px">
+                    <div data-role="header" data-theme="c">
+                        <h1 >Success</h1>
+                    </div>
+                    <div role="main" class="ui-content ui-body-a">
+                        <p data-bind="html:pledgeTemplate.thankYouText">
+                        </p>
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-c" data-rel="back">Ok</a>
+                    </div>
+                </div>
+
+                  
+                </div>
+        </div>
+
+    </div>
+</body>
+</html>
+
+
+

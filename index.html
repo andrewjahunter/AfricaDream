@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="styles/app.css" rel="stylesheet" />
+    <link href="styles/jquery.mobile-1.4.4.min.css" rel="stylesheet" />
+    <link href="styles/jquery.mobile.structure-1.4.4.min.css" rel="stylesheet" />
+    <script src="scripts/jquery-1.11.1.min.js"></script>
+    <script src="scripts/jquery.mobile-1.4.4.min.js"></script>
+    <script src="scripts/knockout-3.2.0.js"></script>
+    <script src="scripts/knockout.mapping.js"></script>
+    <link href="styles/newsapp.mobile.css" rel="stylesheet" />
+    <script src="scripts/appevents.js"></script>
+    <script src="scripts/app.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            gdd.init();
+        })
+    </script>
+
+
+
+    <style>
+        #circularG {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
+        .circularG {
+            position: absolute;
+            background-color: #4572B4;
+            width: 17px;
+            height: 17px;
+            -moz-border-radius: 11px;
+            -moz-animation-name: bounce_circularG;
+            -moz-animation-duration: 1.28s;
+            -moz-animation-iteration-count: infinite;
+            -moz-animation-direction: linear;
+            -webkit-border-radius: 11px;
+            -webkit-animation-name: bounce_circularG;
+            -webkit-animation-duration: 1.28s;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-direction: linear;
+            -ms-border-radius: 11px;
+            -ms-animation-name: bounce_circularG;
+            -ms-animation-duration: 1.28s;
+            -ms-animation-iteration-count: infinite;
+            -ms-animation-direction: linear;
+            -o-border-radius: 11px;
+            -o-animation-name: bounce_circularG;
+            -o-animation-duration: 1.28s;
+            -o-animation-iteration-count: infinite;
+            -o-animation-direction: linear;
+            border-radius: 11px;
+            animation-name: bounce_circularG;
+            animation-duration: 1.28s;
+            animation-iteration-count: infinite;
+            animation-direction: linear;
+        }
+
+        #circularG_1 {
+            left: 0;
+            top: 30px;
+            -moz-animation-delay: 0.48s;
+            -webkit-animation-delay: 0.48s;
+            -ms-animation-delay: 0.48s;
+            -o-animation-delay: 0.48s;
+            animation-delay: 0.48s;
+        }
+
+        #circularG_2 {
+            left: 8px;
+            top: 8px;
+            -moz-animation-delay: 0.64s;
+            -webkit-animation-delay: 0.64s;
+            -ms-animation-delay: 0.64s;
+            -o-animation-delay: 0.64s;
+            animation-delay: 0.64s;
+        }
+
+        #circularG_3 {
+            top: 0;
+            left: 30px;
+            -moz-animation-delay: 0.8s;
+            -webkit-animation-delay: 0.8s;
+            -ms-animation-delay: 0.8s;
+            -o-animation-delay: 0.8s;
+            animation-delay: 0.8s;
+        }
+
+        #circularG_4 {
+            right: 8px;
+            top: 8px;
+            -moz-animation-delay: 0.96s;
+            -webkit-animation-delay: 0.96s;
+            -ms-animation-delay: 0.96s;
+            -o-animation-delay: 0.96s;
+            animation-delay: 0.96s;
+        }
+
+        #circularG_5 {
+            right: 0;
+            top: 30px;
+            -moz-animation-delay: 1.12s;
+            -webkit-animation-delay: 1.12s;
+            -ms-animation-delay: 1.12s;
+            -o-animation-delay: 1.12s;
+            animation-delay: 1.12s;
+        }
+
+        #circularG_6 {
+            right: 8px;
+            bottom: 8px;
+            -moz-animation-delay: 1.28s;
+            -webkit-animation-delay: 1.28s;
+            -ms-animation-delay: 1.28s;
+            -o-animation-delay: 1.28s;
+            animation-delay: 1.28s;
+        }
+
+        #circularG_7 {
+            left: 30px;
+            bottom: 0;
+            -moz-animation-delay: 1.44s;
+            -webkit-animation-delay: 1.44s;
+            -ms-animation-delay: 1.44s;
+            -o-animation-delay: 1.44s;
+            animation-delay: 1.44s;
+        }
+
+        #circularG_8 {
+            left: 8px;
+            bottom: 8px;
+            -moz-animation-delay: 1.6s;
+            -webkit-animation-delay: 1.6s;
+            -ms-animation-delay: 1.6s;
+            -o-animation-delay: 1.6s;
+            animation-delay: 1.6s;
+        }
+
+        @-moz-keyframes bounce_circularG {
+            0% {
+                -moz-transform: scale(1);
+            }
+
+            100% {
+                -moz-transform: scale(.3);
+            }
+        }
+
+        @-webkit-keyframes bounce_circularG {
+            0% {
+                -webkit-transform: scale(1);
+            }
+
+            100% {
+                -webkit-transform: scale(.3);
+            }
+        }
+
+        @-ms-keyframes bounce_circularG {
+            0% {
+                -ms-transform: scale(1);
+            }
+
+            100% {
+                -ms-transform: scale(.3);
+            }
+        }
+
+        @-o-keyframes bounce_circularG {
+            0% {
+                -o-transform: scale(1);
+            }
+
+            100% {
+                -o-transform: scale(.3);
+            }
+        }
+
+        @keyframes bounce_circularG {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(.3);
+            }
+        }
+    </style>
+  
+
+    
+</head>
+<body>
+
+    <div data-role="popup" class="globalPopup" id="globalErrorMessage" data-overlay-theme="b" data-theme="e" data-dismissible="false" style="max-width: 400px; display: none">
+        <div data-role="header" data-theme="e">
+            <h1 id="glbErrMsgHeader">Error</h1>
+        </div>
+        <div role="main" class="ui-content ui-body-a">
+            <p id="glbErrMsgContent">
+            </p>
+            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-e" data-rel="back">Ok</a>
+        </div>
+    </div>
+
+    <div data-role="popup" class="globalPopup" id="globalMessage" data-overlay-theme="b" data-theme="a" data-dismissible="false" style="max-width: 400px; display: none">
+        <div data-role="header" data-theme="b">
+            <h1 id="glbMsgHeader">Message</h1>
+        </div>
+        <div role="main" class="ui-content ui-body-a">
+            <p id="glbMsgContent">
+            </p>
+            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" data-rel="back">Ok</a>
+        </div>
+    </div>
+  
+
+  
+    <div data-role="page" id="pg_index">
+
+        <div class="pageViewContent" >
+            <!--<div data-role="header">
+                <h1>Start</h1>
+            </div>-->
+
+            <div role="main" class="ui-content">
+
+                <div style="text-align:center; margin-top:50px ">
+                   
+                    <img src="img/logo_white.jpg" style="max-width:100%; height:auto" />
+                </div>
+
+                <div style="text-align:center; display:none " id="indexPageSpinner" >
+
+                    <div style="text-align:center; margin-left:auto; margin-right:auto">
+                        <div id="circularG">
+                            <div id="circularG_1" class="circularG">
+                            </div>
+                            <div id="circularG_2" class="circularG">
+                            </div>
+                            <div id="circularG_3" class="circularG">
+                            </div>
+                            <div id="circularG_4" class="circularG">
+                            </div>
+                            <div id="circularG_5" class="circularG">
+                            </div>
+                            <div id="circularG_6" class="circularG">
+                            </div>
+                            <div id="circularG_7" class="circularG">
+                            </div>
+                            <div id="circularG_8" class="circularG">
+                            </div>
+                        </div>
+                        <div style="text-align:center;margin-top:15px">
+                            configuring...
+                        </div>
+                    </div>
+                       
+                   
+                    
+                   
+                </div>
+
+                <div style="display:none; margin-top:50px " id="indexPageError">
+                    <div style="text-align: center" id="indexPageErrMsg">
+
+                    </div>
+                    <div style="text-align:center">
+                        <button  class="ui-btn ui-btn-e ui-mini ui-btn-inline" onclick="window.location.href = 'index.html'">Try Again</button>
+                    </div>
+
+                </div>
+
+
+
+                <div style="text-align:center ">
+
+                    <img src="img/praygivego.jpg" style="max-width:100%; height:auto" />
+                </div>
+
+                <div style="text-align:center; display:none" id="indexPageStart" >
+                    <button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-mini" id="btnIndexPageStart">
+                        Start
+                    </button>
+                </div>
+              
+
+
+
+            </div>
+
+          
+        </div>
+
+       
+        </div><!-- /page -->
+</body>
+</html>

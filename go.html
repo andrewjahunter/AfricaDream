@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Go</title>
+
+</head>
+<body>
+
+
+
+    <div data-role="page" id="pg_go">
+        <div class="pageViewContent">
+            <div data-role="header">
+                <a href="#" class="ui-btn ui-btn-b ui-icon-home ui-btn-icon-notext headerMenuHome"></a>
+                <h1>Go</h1>
+                <a href="#" class="ui-btn ui-btn-b ui-icon-refresh ui-btn-icon-notext refreshMissions "></a>
+            </div><!-- /header -->
+
+            <div role="main" class="ui-content">
+
+                <div id="noMissionItems" style="display:none">
+
+                    <div class="ui-bar ui-bar-h">
+                        <div style="text-align:center">No Missions</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                        There are no upcoming missions available. To refresh the information in this display click the 'refresh' button at the top of the screen.
+
+                    </div>
+
+                </div>
+
+
+                <div id="missionItems" style="display:none">
+                    <div class="ui-bar ui-bar-b">
+                        <div style="text-align:center">Upcoming Missions</div>
+                    </div>
+                    <div class="ui-content ui-body-b" style="text-align: center; font-size:small">
+                        These are the upcoming missions available on your profile. Click the 'refresh' button at the top of the screen to refresh the list.
+
+                    </div>
+
+                    <div data-bind="foreach:missions">
+
+                        <div class="ui-bar ui-bar-h" style="text-align:center" data-bind="html:name">
+
+                        </div>
+
+                        <div class="ui-content ui-body-b">
+
+                            <p class="ui-content ui-body-h">
+                                <small data-bind="html:description"></small>
+                            </p>
+
+                            <table width="100%" style="font-size:small">
+                                <tr>
+                                    <td><strong>Dates</strong></td>
+                                    <td>
+                                        <div data-bind="html:dateFrom + ' to ' + dateTo"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Country</strong></td>
+                                    <td>
+                                        <div data-bind="html:country"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Contact</strong></td>
+                                    <td>
+                                        <div data-bind="html:contactPerson"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email</strong></td>
+                                    <td>
+                                        <div data-bind="html:contactEmail"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tel Number</strong></td>
+                                    <td>
+                                        <div data-bind="html:contactNumber"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div data-bind="visible:allowVolunteering">
+                                            <div data-bind="visible:volunteered" class="ui-content ui-body-c">
+                                                <div>
+                                                    <small>You have indicated that you would like to go on this mission. You can change this by clicking the button below.</small>
+                                                </div>
+                                                <div style="text-align:center">
+                                                    <button type="button" class="ui-btn ui-mini ui-btn-inline ui-btn-b btnCannotGoOnMission" data-bind="attr:{'data-id':missionId}">I cannot go anymore</button>
+                                                </div>
+
+                                            </div>
+
+                                            <div data-bind="visible:!volunteered" class="ui-content ui-body-h">
+                                                <div>
+                                                    <small>If you would like to go on this mission, click the button below.</small>
+                                                </div>
+                                                <div style="text-align:center">
+                                                    <button type="button" class="ui-btn ui-btn-inline ui-mini ui-btn-b btnGoOnMission" data-bind="attr:{'data-id':missionId}">GO on this mission</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+
+                            </table>
+
+                        </div>
+
+                        
+
+                    </div>
+
+
+                </div>
+
+
+            </div><!-- /content -->
+
+        </div>
+    </div><!-- /page -->
+</body>
+</html>
+
+
+
