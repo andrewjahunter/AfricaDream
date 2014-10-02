@@ -1026,9 +1026,9 @@ window.gdd = function () {
                     }
 
 
-                    //setTimeout(function () {
-                    //    navigator.splashscreen.hide();
-                    //}, 3000)
+                    setTimeout(function () {
+                        navigator.splashscreen.hide();
+                    }, 3000)
 
 
 
@@ -1320,7 +1320,7 @@ window.gdd = function () {
                             })
 
                             $("#btnCompleteSetupPgHome").on(userTap, function () {
-                                gdd.pages.person.view.finishedButtonText = "Go back to home menu"
+                                gdd.pages.person.view.finishedButtonText = "CLICK HERE WHEN YOU ARE DONE"
                                 gdd.pages.person.view.callback = function () {
                                     loadPage(gdd.pages.home, pageTransitionOneReverse)
                                 }
