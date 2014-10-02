@@ -217,7 +217,7 @@ window.gdd = function () {
 
         if (reload) {
 
-            showLoader("Loading settings...")
+           
             callApi(
                     "News/GetNewsAppConfig",
                    "GET",
@@ -230,11 +230,11 @@ window.gdd = function () {
 
                                localStorage.setItem(configKey, JSON.stringify(config));
 
-                               hideLoader()
+                              
                                success()
                            },
                            function (msg) {
-                               hideLoader();
+                               
                                fail(msg)
                            })
         }
@@ -629,11 +629,11 @@ window.gdd = function () {
 
             if ((isOnline()) && (isReady())) {
 
-
+                showLoader("Checking configuration...")
                 checkConfigData(
                     false,
                     function () {
-
+                        hideLoader()
                         if (!gdd.deviceId) {
                             configPushNotifications()
                         }
@@ -651,6 +651,7 @@ window.gdd = function () {
                         }
                     },
                     function (err) {
+                        hideLoader()
                         showErrMsg(err)
                     })
 
@@ -1000,6 +1001,8 @@ window.gdd = function () {
 
             gdd.appInitialized = true;
 
+           // alert("Base App Initialized")
+
             //becuase we know this routine is called in the index page we call the show method here rather
             //than the loadPage method. If we call load page here the pagecontainer events do not fire as the index page already is
             //shown
@@ -1010,7 +1013,7 @@ window.gdd = function () {
         },
         phoneGap: {
             onDeviceReady: function () {
-
+                alert("Device ready fired")
                 try {
                   deviceIsReady = true;
 
@@ -1023,9 +1026,9 @@ window.gdd = function () {
                     }
 
 
-                    setTimeout(function () {
-                        navigator.splashscreen.hide();
-                    }, 3000)
+                    //setTimeout(function () {
+                    //    navigator.splashscreen.hide();
+                    //}, 3000)
 
 
 
@@ -1127,6 +1130,7 @@ window.gdd = function () {
 
                         document.addEventListener("deviceready", gdd.phoneGap.onDeviceReady, false);
 
+                        //alert("starting the loading process")
                         //alert("Function: " + gdd.init.runIndexPageLoadingProcess)
                         gdd.pages.index.view.runLoadingProcess()
 
@@ -1265,10 +1269,12 @@ window.gdd = function () {
 
                                 localStorage.clear();
 
+                                showLoader("Loading configuration...")
+
                                 checkConfigData(
                                     true,
                                     function () {
-
+                                        hideLoader()
                                         window.location.href = 'index.html'
                                         //displayMissingFieldMsg()
 
@@ -1276,7 +1282,7 @@ window.gdd = function () {
 
                                     },
                                     function (err) {
-
+                                        hideLoader()
                                         displayMissingFieldMsg()
 
                                         showErrMsg(err)
@@ -1286,11 +1292,11 @@ window.gdd = function () {
                             $("#btnReloadConfig").on(userTap, function () {
 
                               
-
+                                showLoader("Loading configuration...")
                                 checkConfigData(
                                     true,
                                     function () {
-
+                                        hideLoader()
                                         window.location.href = 'index.html'
                                         //displayMissingFieldMsg()
 
@@ -1298,7 +1304,7 @@ window.gdd = function () {
 
                                     },
                                     function (err) {
-
+                                        hideLoader()
                                         displayMissingFieldMsg()
 
                                         showErrMsg(err)

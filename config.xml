@@ -115,20 +115,20 @@
     -->
 
   <!-- Define app icon for each platform. -->
-  <icon src="mobile/img/icon.png" />
+  <icon src="img/icon.png" />
 
 
-  <icon src="mobile/img/ios/icon120x120.png" gap:platform="ios" width="120" height="120" />
-  <icon src="mobile/img/ios/icon152x152.png" gap:platform="ios" width="152" height="152" />
-  <icon src="mobile/img/ios/icon76x76.png" gap:platform="ios" width="76" height="76" />
-  <icon src="mobile/img/ios/icon1024x1024.png" gap:platform="ios" width="1024" height="1024" />
-  <icon src="mobile/img/ios/icon57x57.png" gap:platform="ios" width="57" height="57" />
-  <icon src="mobile/img/ios/icon72x72.png" gap:platform="ios" width="72" height="72" />
+  <icon src="img/ios/icon120x120.png" gap:platform="ios" width="120" height="120" />
+  <icon src="img/ios/icon152x152.png" gap:platform="ios" width="152" height="152" />
+  <icon src="img/ios/icon76x76.png" gap:platform="ios" width="76" height="76" />
+  <icon src="img/ios/icon1024x1024.png" gap:platform="ios" width="1024" height="1024" />
+  <icon src="img/ios/icon57x57.png" gap:platform="ios" width="57" height="57" />
+  <icon src="img/ios/icon72x72.png" gap:platform="ios" width="72" height="72" />
 
-  <icon src="mobile/img/android/icon-ldpi.png"   gap:platform="android"    gap:density="ldpi" />
-  <icon src="mobile/img/android/icon-mdpi.png"   gap:platform="android"    gap:density="mdpi" />
-  <icon src="mobile/img/android/icon-hdpi.png"   gap:platform="android"    gap:density="hdpi" />
-  <icon src="mobile/img/android/icon-xhdpi.png"  gap:platform="android"    gap:density="xhdpi" />
+  <icon src="img/android/icon-ldpi.png"   gap:platform="android"    gap:density="ldpi" />
+  <icon src="img/android/icon-mdpi.png"   gap:platform="android"    gap:density="mdpi" />
+  <icon src="img/android/icon-hdpi.png"   gap:platform="android"    gap:density="hdpi" />
+  <icon src="img/android/icon-xhdpi.png"  gap:platform="android"    gap:density="xhdpi" />
   
   
 
@@ -149,16 +149,16 @@
   <icon src="res/icon/windows-phone/icon-173.png" gap:platform="winphone"   gap:role="background" />-->
 
   <!-- Define app splash screen for each platform. -->
-  <gap:splash src="mobile/img/splash.png" />
+  <gap:splash src="img/splash.png" />
 
-  <gap:splash src="mobile/img/ios/splash640x1136.png" gap:platform="ios" width="640" height="1136" />
-  <gap:splash src="mobile/img/ios/splash640x960.png" gap:platform="ios" width="640" height="960" />
-  <gap:splash src="mobile/img/ios/splash1536x2048.png" gap:platform="ios" width="1536" height="2048" />
+  <gap:splash src="img/ios/splash640x1136.png" gap:platform="ios" width="640" height="1136" />
+  <gap:splash src="img/ios/splash640x960.png" gap:platform="ios" width="640" height="960" />
+  <gap:splash src="img/ios/splash1536x2048.png" gap:platform="ios" width="1536" height="2048" />
   <!-- retina iPad support: PhoneGap 2.5.0+ only -->
-  <gap:splash src="mobile/img/ios/splash2048x1536.png" gap:platform="ios" width="2048" height="1536" />
-  <gap:splash src="mobile/img/ios/splash768x1024.png" gap:platform="ios" width="768" height="1024" />
-  <gap:splash src="mobile/img/ios/splash1024x768.png" gap:platform="ios" width="1024" height="768" />
-  <gap:splash src="mobile/img/ios/splash320x480.png" gap:platform="ios" width="320" height="480" />
+  <gap:splash src="img/ios/splash2048x1536.png" gap:platform="ios" width="2048" height="1536" />
+  <gap:splash src="img/ios/splash768x1024.png" gap:platform="ios" width="768" height="1024" />
+  <gap:splash src="img/ios/splash1024x768.png" gap:platform="ios" width="1024" height="768" />
+  <gap:splash src="img/ios/splash320x480.png" gap:platform="ios" width="320" height="480" />
   
   
   
@@ -170,10 +170,10 @@
   
   
   
-  <gap:splash src="mobile/img/android/splash-all.png"  gap:platform="android" gap:density="ldpi" />
-  <gap:splash src="mobile/img/android/splash-all.png"  gap:platform="android" gap:density="mdpi" />
-  <gap:splash src="mobile/img/android/splash-all.png"  gap:platform="android" gap:density="hdpi" />
-  <gap:splash src="mobile/img/android/splash-all.png" gap:platform="android" gap:density="xhdpi" />
+  <gap:splash src="img/android/splash-all.png"  gap:platform="android" gap:density="ldpi" />
+  <gap:splash src="img/android/splash-all.png"  gap:platform="android" gap:density="mdpi" />
+  <gap:splash src="img/android/splash-all.png"  gap:platform="android" gap:density="hdpi" />
+  <gap:splash src="img/android/splash-all.png" gap:platform="android" gap:density="xhdpi" />
 
 
 
