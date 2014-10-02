@@ -2084,7 +2084,7 @@ window.gdd = function () {
                             $(".missingChurch").fadeIn();
                         })
 
-                        $(".refreshChurchView").off().on(userTap, function () {
+                        $(".refreshChurchView").off().on(userClick, function () {
                             gdd.pages.churches.view.showChurchSearch()
                         });
                     },
@@ -2317,7 +2317,7 @@ window.gdd = function () {
                                         gdd.pages.churches.view.showMissingGeoStructure()
                                     })
 
-                                    $("#btnViewAllChurchesOnMap").off().on(userTap, function () {
+                                    $("#btnViewAllChurchesOnMap").off().on(userClick, function () {
 
                                         var thisView = gdd.pages.churches.view
                                         thisView.latLng.length = 0
@@ -2664,7 +2664,7 @@ window.gdd = function () {
 
                             })
 
-                            $("#btnPersonalInfoAction").off().on(userTap, function () {
+                            $("#btnPersonalInfoAction").off().on(userClick, function () {
                                 $("#popupPersonsActionMenu").popup("open", { "transition": "pop" })
                             })
 
@@ -2683,6 +2683,7 @@ window.gdd = function () {
                                         gdd.thisPerson.mobileNumber('')
                                         gdd.thisPerson.subscribed(false)
 
+                                        gdd.deviceId = null;
                                         showFindAccount()
 
                                         gdd.pages.person.view.action = -1;
@@ -2795,17 +2796,17 @@ window.gdd = function () {
 
 
 
-                            $("#btnFindAnotherAccountPgPersonalInfo").off().on(userTap, function () {
+                            $("#btnFindAnotherAccountPgPersonalInfo").off().on(userClick, function () {
                                 gdd.pages.person.view.action = 1;
                                 $("#popupPersonsActionMenu").popup("close")
                             });
 
-                            $("#btnCancelPgPersonalInfo").off().on(userTap, function () {
+                            $("#btnCancelPgPersonalInfo").off().on(userClick, function () {
                                 gdd.pages.person.view.action = 2;
                                 $("#popupPersonsActionMenu").popup("close")
                             });
 
-                            $("#btnClosePgPersonalInfo").off().on(userTap, function () {
+                            $("#btnClosePgPersonalInfo").off().on(userClick, function () {
                                 gdd.pages.person.view.action = 3;
                                 $("#popupPersonsActionMenu").popup("close")
                             });
