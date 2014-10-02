@@ -1138,6 +1138,25 @@ window.gdd = function () {
                     }
                 },
             },
+            about: {
+                id: "pg_about",
+                path: "about.html",
+                view: {
+                  
+                    show: function () {
+
+                        var init = function () {
+
+                           
+                        }
+
+                        init()
+
+                       
+                    }
+                },
+            },
+
             home: {
                 id: "pg_home",
                 path: "home.html",
@@ -1155,6 +1174,11 @@ window.gdd = function () {
                         }
 
                         var init = function () {
+
+                            
+                            $("#btnAboutPgHome").on(userTap, function () {
+                                loadPage(gdd.pages.about, pageTransitionOne)
+                            })
 
 
                             $("#btnGoToNewsPgHome").on(userTap, function () {
@@ -2684,6 +2708,9 @@ window.gdd = function () {
                                         gdd.thisPerson.subscribed(false)
 
                                         gdd.deviceId = null;
+
+                                        localStorage.removeItem(deviceIdKey)
+
                                         showFindAccount()
 
                                         gdd.pages.person.view.action = -1;
