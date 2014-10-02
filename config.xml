@@ -51,6 +51,7 @@
   <gap:plugin name="org.apache.cordova.network-information" />
   <gap:plugin name="org.apache.cordova.inappbrowser" version="0.3.3" />
   <gap:plugin name="org.apache.cordova.media" version="0.2.8" />
+  <gap:plugin name="nl.x-services.plugins.socialsharing" />
   
   <!--<feature name="http://api.phonegap.com/1.0/device" />-->
   <feature name="http://api.phonegap.com/1.0/geolocation"/>

@@ -59,6 +59,7 @@ window.gdd = function () {
     //#region GENERAL
     //the thing to change for each news app is the appCode, its waht is used to configure the application
     var pledgeCode = 'mobirev'
+   
     var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0" }
     var baseUrl = function () {
         //return "http://localhost/webapi2/api/"
@@ -1440,6 +1441,24 @@ window.gdd = function () {
                             $(".btnPreviousNewsItem").off().on(userTap, function () {
                                 changeNewsItem(false, true)
                             });
+
+                            $(".btnShareNewsItem").off().on(userTap, function () {
+                                if (isNative()) {
+                                    var msg = ""
+                                    if (gdd.selectedNewsItem.url()) {
+                                        msg="I would like to share the news story with you. " + gdd.selectedNewsItem.url()
+                                    } else {
+                                        msg = "I would like to share the news story with you....(fill in the rest here)"
+
+                                    }
+
+                                    window.plugins.socialsharing.share(msg)
+                                } else {
+                                    showMsg("Sharing is only available in the native version of this application, not the browser version.")
+                                }
+                            });
+
+                            
                         }
                         init()
 
@@ -1510,6 +1529,21 @@ window.gdd = function () {
                                 changeNewsItem(false, false)
                             });
 
+                            $(".btnShareNewsItem").off().on(userTap, function () {
+                                if (isNative()) {
+                                    var msg = ""
+                                    if (gdd.selectedNewsItem.url()) {
+                                        msg = "I would like to share this prayer item with you. " + gdd.selectedNewsItem.url()
+                                    } else {
+                                        msg = "I would like to share thi prayer item with you...."
+
+                                    }
+
+                                    window.plugins.socialsharing.share(msg)
+                                } else {
+                                    showMsg("Sharing is only available in the native version of this application, not the browser version.")
+                                }
+                            });
                         }
                         init();
 

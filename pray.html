@@ -42,6 +42,7 @@
                         <div style="text-align:center">
                             <a href="#" class="ui-btn ui-btn-inline ui-icon-carat-l ui-btn-icon-notext ui-corner-all btnPreviousPrayerItem"></a>
                             <a href="#" class="ui-btn ui-btn-inline ui-icon-carat-r ui-btn-icon-notext ui-corner-all btnNextPrayerItem"></a>
+                            
                         </div>
 
 
@@ -61,7 +62,10 @@
                         </div>
 
                         <div class="ui-bar ui-bar-h">
-                            <div style="text-align:justify" data-bind="html:selectedNewsItem.title"></div>
+                            <div style="text-align:center" data-bind="html:selectedNewsItem.title"></div>
+                        </div>
+                        <div style="text-align:center">
+                            <button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-icon-comment ui-btn-icon-left ui-mini btnShareNewsItem">Share</button>
                         </div>
 
                         <div data-bind="html:selectedNewsItem.content"></div>
