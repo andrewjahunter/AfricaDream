@@ -58,7 +58,7 @@ window.gdd = function () {
 
     //#region GENERAL
     //the thing to change for each news app is the appCode, its waht is used to configure the application
-    var pledgeCode = 'mobirev'
+    var pledgeCode = 'africadream'
 
     var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0" }
     var baseUrl = function () {
