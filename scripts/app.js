@@ -1624,6 +1624,24 @@ window.gdd = function () {
                                 })
                             });
 
+
+                            $("#btnShareNewsItem").off().on(userTap, function () {
+                                if (isNative()) {
+                                    var msg = ""
+                                    if (gdd.selectedNewsItem.url()) {
+                                        msg = "I would like to share the news story with you. " + gdd.selectedNewsItem.url()
+                                    } else {
+                                        msg = "I would like to share the news story with you....(fill in the rest here)"
+
+                                    }
+
+                                    window.plugins.socialsharing.share(msg)
+                                } else {
+                                    showMsg("Sharing is only available in the native version of this application, not the browser version.")
+                                }
+                            });
+
+
                         }
 
                         init()
