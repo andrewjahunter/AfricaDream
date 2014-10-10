@@ -15,15 +15,15 @@
 
             <div data-role="header">
                 <a href="#" class="ui-btn ui-btn-b ui-icon-home ui-btn-icon-notext headerMenuHome"></a>
-                <h1>News</h1>
-                <a href="#" class="ui-btn ui-btn-b ui-icon-refresh ui-btn-icon-notext refreshNewsFeeds "></a>
+                <h1 id="newsHeader">News</h1>
+                <a href="#" class="ui-btn ui-btn-b ui-icon-refresh ui-btn-icon-notext refreshNewsItems "></a>
             </div><!-- /header -->
 
             <div role="main" class="ui-content">
+           
+                <div class="newsItemSubView noNewsItemsView" style="display:none">
 
-                <div id="noNewsItems" style="display:none">
-
-                    <div class="ui-bar ui-bar-b">
+                    <div class="ui-bar ui-bar-h">
                         <div style="text-align:center">No News</div>
                     </div>
                     <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
@@ -33,17 +33,30 @@
 
                 </div>
 
-                <div id="newsItems" style="display:none">
+                <div class="newsItemSubView noPrayerItemsView" style="display:none">
+
                     <div class="ui-bar ui-bar-h">
-                        <div style="text-align:center; font-size:smaller">(click the 'refresh' button at the top of the screen to reload this news feed.)</div>
+                        <div style="text-align:center">No Prayer Items</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                        There are no prayer items available on this channel. Please check back soon and click the 'refresh' button at the top of the screen.
+
                     </div>
 
-                    <div class="newsListItem">
-                        <div style="text-align:center">
-                            <a href="#" class="ui-btn ui-btn-inline ui-icon-carat-l ui-btn-icon-notext ui-corner-all btnPreviousNewsItem"></a>
-                            <a href="#" class="ui-btn ui-btn-inline ui-icon-carat-r ui-btn-icon-notext ui-corner-all btnNextNewsItem"></a>
-                        </div>
-                       
+                </div>
+               
+                <div class="newsItemSubView selectedItemView" data-bind="with:pages.news.view" style="display:none">
+
+                    <div style="text-align:center">
+                        <a href="#" class="ui-btn ui-btn-inline ui-icon-carat-l ui-btn-icon-notext ui-corner-all btnPreviousNewsItem"></a>
+                        <span class="newsItemCount"></span>
+                        <a href="#" class="ui-btn ui-btn-inline ui-icon-carat-r ui-btn-icon-notext ui-corner-all btnNextNewsItem"></a>
+                    </div>
+
+
+                    <div id="newsListItem">
+
+
                         <div data-bind="visible:selectedNewsItem.displayHeader">
 
                             <div data-bind="visible:selectedNewsItem.headerIsImage()">
@@ -53,42 +66,54 @@
                             </div>
 
                             <div data-bind="visible:!selectedNewsItem.headerIsImage()">
-                                <iframe width="100%" height="280" data-bind="attr: {src: selectedNewsItem.headerVideoUrl}"  frameborder="0" allowfullscreen></iframe>
-                               
+                                <iframe width="100%" height="280" data-bind="attr: {src: selectedNewsItem.headerVideoUrl}" frameborder="0" allowfullscreen></iframe>
+
                             </div>
 
                         </div>
-                       
+
 
                         <div class="ui-bar ui-bar-h">
                             <div style="text-align:center;" data-bind="html:selectedNewsItem.title"></div>
-                        </div>                     
-                        <div style="text-align:center">
-                            <button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-icon-comment ui-btn-icon-left ui-mini btnShareNewsItem">Share</button>
                         </div>
-                        <div data-bind="html:selectedNewsItem.content"></div>
+
+                        <div class="ui-content ui-body-h" data-bind="html:selectedNewsItem.tagLine" style="font-size: small;text-align:justify; margin-bottom: 5px">
+
+                        </div>
+
+                        <div data-bind="html:selectedNewsItem.content" style="font-size: small;text-align:justify"></div>
                         <div style="text-align:center">
                             <a href="#" class="ui-btn ui-btn-a ui-btn-inline ui-mini btnNewsItemWebUrl">View on Web</a>
                         </div>
-                        <hr/>
+                        <hr />
                         <div style="font-size:small; font-style:italic">
                             <div><strong>Country: </strong><span data-bind="html:selectedNewsItem.country"></span></div>
                             <div><strong>Type: </strong><span data-bind="html:selectedNewsItem.type"></span></div>
                             <div><strong>Channel: </strong><span data-bind="html:selectedNewsItem.channelName"></span></div>
                         </div>
-                        
                     </div>
 
-
                 </div>
-
-
+               
 
             </div><!-- /content -->
+       
+          
 
-            <!--<div data-role="footer">
+            <div data-role="footer" style="overflow:hidden;" data-position="fixed">
                
-            </div>-->
+                <div data-role="navbar">
+                    <ul>
+                        <li><button type="button"  class="newsFooterCmds" id="btnShareNewsItem">Share</button></li>
+                        <li><button type="button" class="refreshNewsItems" >Refresh</button></li>
+                        <li><button type="button" class="newsFooterCmds" id="btnMarkNewsItemAsRead">I've Read</button></li>
+                        
+                    </ul>
+                </div><!-- /navbar -->
+            </div><!-- /footer -->
+
+
+        
 
         </div>
     </div>

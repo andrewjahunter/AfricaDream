@@ -38,7 +38,7 @@
                             </label>
                         </div>-->
                         <select id="ddlGeoCountry" data-theme="a" data-bind="options: countriesSearch,optionsCaption: 'Filter by country...'"></select>
-                        <a href="#" class="btnLinkMissingData">My country is not here</a>
+                        <a href="#" class="btnLinkChurchSearchMissingData">My country is not here</a>
                     </div>
 
                     <div class="ui-field-contain churchSearchRegion churchSearchFilter" style="display:none">
@@ -48,7 +48,7 @@
                             </label>
                         </div>-->
                         <select id="ddlGeoRegion" data-theme="a" data-bind="options: regionsSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Filter by region...'"></select>
-                        <a href="#" class="btnLinkMissingData">My region is not here</a>
+                        <a href="#" class="btnLinkChurchSearchMissingData">My region is not here</a>
                     </div>
 
                     <div class="ui-field-contain churchSearchCity churchSearchFilter" style="display:none">
@@ -58,20 +58,30 @@
                             </label>
                         </div>-->
                         <select id="ddlGeoCity" data-theme="a" data-bind="options: citiesSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Filter by city...'"></select>
-                        <a href="#" class="btnLinkMissingData">My city is not here</a>
+                        <a href="#" class="btnLinkChurchSearchMissingData">My city is not here</a>
                     </div>
 
-                    <button type="button" class="ui-btn ui-btn-b ui-btn-inline" id="btnFindChurches">Find Churches</button>
-                    <button type="button" class="ui-btn ui-btn-a ui-btn-inline" id="btnResetChurchSearch">Reset</button>
+                    <button type="button" class="ui-btn ui-btn-b " id="btnFindChurches">Find Churches</button>
+                    <!--<button type="button" class="ui-btn ui-btn-a ui-btn-inline" id="">Reset</button>-->
+
+
+                    <div data-role="footer" style="overflow:hidden;" data-position="fixed">
+
+                        <div data-role="navbar">
+                            <ul>
+                               
+                                <li><button type="button" class="btnLinkChurchSearchMissingData">Can't find my area</button></li>
+                                <li><button type="button"  id="btnResetChurchSearch">Reset</button></li>
+
+                            </ul>
+                        </div><!-- /navbar -->
+                    </div><!-- /footer -->
+
 
                 </div>
 
                 <div class="churchSubView churchList" style="display:none" data-bind="with:pages.churches.view">
-                    <div style="text-align:center">
-                        <a href="#" id="btnViewAllChurchesOnMap">Map View</a>
-                        <!--<button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-icon-location ui-btn-icon-left " >Map View</button>-->
-
-                    </div>
+                   
                     <div data-bind="foreach:churchList">
                         <div class="ui-bar ui-bar-h" style="text-align:center" data-bind="html:name">
 
@@ -173,13 +183,20 @@
 
 
                     </div>
+
+                    <div data-role="footer" style="overflow:hidden;" data-position="fixed">
+
+                        <div data-role="navbar">
+                            <ul>
+                                <li><button type="button" class="ui-btn ui-btn-b" id="btnViewAllChurchesOnMap">View results on map</button></li>                             
+
+                            </ul>
+                        </div><!-- /navbar -->
+                    </div><!-- /footer -->
                 </div>
 
                 <div class="churchSubView churchMap" style="display:none">
-                    <div style="text-align:center">
-                        <a href="#" class="refreshChurchView">List View</a>
-                        <!--<button type="button" class="ui-btn ui-btn-b ui-btn-inline ui-icon-bullets ui-btn-icon-left refreshChurchView ">List View</button>-->
-                    </div>
+                  
                     <div id='gmapsCanvas' class="gmapsCanvas" style="width: 100%; ">
                         <div style="text-align:center; top:15px">
                             <div>Loading mapping data...</div>
@@ -187,7 +204,15 @@
                         </div>
 
                     </div>
+                    <div data-role="footer" style="overflow:hidden;" data-position="fixed">
 
+                        <div data-role="navbar">
+                            <ul>
+                                <li><button type="button"  class="ui-btn ui-btn-b  refreshChurchView">List view</button></li>
+
+                            </ul>
+                        </div><!-- /navbar -->
+                    </div><!-- /footer -->
                 </div>
 
 

@@ -31,7 +31,7 @@
                         <div style="text-align:center">Find Your Information</div>
                     </div>
                     <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
-                        We may already have your information on file. Simply enter either your email address or mobile phone number
+                        Try find your information. Simply enter either your email address or mobile phone number
                         into the box below and click 'Try find account'. If we find your account we will use that information.
                     </div>
 
@@ -46,6 +46,20 @@
                         <button type="button" class="ui-btn ui-btn-a ui-btn-inline " id="btnCheckForAccountCancel">Cancel</button>
                         <button type="button" class="ui-btn ui-btn-b ui-btn-inline " id="btnCheckForAccount">Try find account</button>
                     </div>
+
+
+                    <div data-role="popup" id="popupCantFindPInfo" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width: 400px;">
+                        <div data-role="header" data-theme="b">
+                            <h1>Can't Find!</h1>
+                        </div>
+                        <div role="main" class="ui-content ui-body-a">
+                          <p>Using the information you provided we were not able to find a matching account.</p>
+                            <p>Click 'Try Again' to search for another account or click 'Add' to create a new account with your personal information.</p>
+                            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" id="btnCantFindInfoTryAgain">Try Again</a>
+                            <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" id="btnCantFindInfoAdd">Add</a>
+
+                        </div>
+                    </div>
                 </div>
 
                 <div class="personSubView personInfoView" style="display:none">
@@ -55,10 +69,12 @@
                             <div style="text-align:center">Personal Info</div>
                         </div>
                         <div class="ui-content ui-body-h" style="font-size:small">
-                            This account is an active account on our database.
-                            <p>
-                                NOTE: For security this account can only be updated in any of our apps requiring authentication. These apps can be found at start.godochurch.com 
-                            </p>
+                            This account is an active account on our database. When you are done click 'PROCEED...'
+                           <div>
+                               <a href="#popupWhyCantIEditInfo" data-rel="popup" data-position-to="window" data-transition="pop">Why can't I edit my information here?</a>
+
+                           </div>
+
                         </div>
                     </div>
 
@@ -67,8 +83,7 @@
                             <div style="text-align:center">Personal Info</div>
                         </div>
                         <div class="ui-content ui-body-d" style="text-align: center; font-size:small">
-                            This account is has not been synced to our database. Not to worry we will create a profile with this information 
-                            when you make any updates.
+                            This account is has not been synced to our database. Not to worry. Fill out the information below click the 'PROCEED...'.
                         </div>
                     </div>
                  
@@ -108,25 +123,22 @@
                         
                         <input type="tel" class="pInfoInput" data-clear-btn="true" data-bind="value:thisPerson.mobileNumber" id="txtPInfoMobileNumber" value="" />
                     </div>
-                    <div style="text-align:center; display:none" class="pInfoSynced">
-                       
-                    
-                        <a href="#popupWhyCantIEditInfo" data-rel="popup" data-position-to="window"  data-transition="pop">Why can't I edit my information here?</a>
+
+                    <div class="ui-field-contain" id="sendEmailCheckBox">
+                        <label>
+                            <input type="checkbox" id="chkBoxSendNIToEmail" data-bind="checked:thisPerson.sendEmail" />
+                            Email me new news and prayer items
+                        </label>
+                        <div><small>(If checked we will automatically email you new news items)</small></div>
                     </div>
+
+                    
 
                     <button type="button" class="ui-btn ui-btn-b " id="btnOKPgPersonalInfo">Finished</button>
 
-                    <button type="button" class="ui-btn ui-btn-a " id="btnPersonalInfoAction" >More Options...</button>
+                
 
-                    <div data-role="popup" id="popupPersonsActionMenu" data-theme="i">
-                        <ul data-role="listview" data-inset="true" style="min-width: 210px;" data-theme="i">
-                          
-                            <!--<li><a href="#" id="btnNotMePgPersonalInfo">This is not me</a></li>-->
-                            <li><a href="#" id="btnFindAnotherAccountPgPersonalInfo">This is not me</a></li>
-                            <li><a href="#" id="btnCancelPgPersonalInfo">Cancel operation</a></li>
-                            <li><a href="#" id="btnClosePgPersonalInfo">Close this menu</a></li>
-                        </ul>
-                    </div>
+                  
 
                     <div data-role="popup"  id="popupWhyCantIEditInfo" data-overlay-theme="b" data-theme="a" data-dismissible="false" style="max-width: 400px;">
                         <div data-role="header" data-theme="b">
@@ -142,14 +154,24 @@
                         </div>
                     </div>
 
+                    <div data-role="footer" style="overflow:hidden;" data-position="fixed" id="footerPInfo">
 
+                        <div data-role="navbar">
+                            <ul>
+                                <li><button type="button" id="btnFindAnotherAccountPgPersonalInfo">Not You?</button></li>
+                                <li><button type="button" id="btnCancelPgPersonalInfo">Cancel</button></li>
+
+
+                            </ul>
+                        </div><!-- /navbar -->
+                    </div><!-- /footer -->
                 </div>
 
 
 
             </div>
             
-
+           
        
 
         </div>

@@ -59,12 +59,12 @@ window.gdd = function () {
     //#region GENERAL
     //the thing to change for each news app is the appCode, its waht is used to configure the application
     var pledgeCode = 'mobirev'
-   
+
     var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0" }
     var baseUrl = function () {
         //return "http://localhost/webapi2/api/"
         return "http://192.168.0.2/webapi2/api/"
-        // return "http://api.gododata.com/webapi2/api/"
+        // return "http://api.gododata.com/newsapi/api/"
     }
 
     //return an object with the unix date and display date attached. If daysAdd is nul then then
@@ -218,7 +218,7 @@ window.gdd = function () {
 
         if (reload) {
 
-           
+
             callApi(
                     "News/GetNewsAppConfig",
                    "GET",
@@ -231,11 +231,11 @@ window.gdd = function () {
 
                                localStorage.setItem(configKey, JSON.stringify(config));
 
-                              
+
                                success()
                            },
                            function (msg) {
-                               
+
                                fail(msg)
                            })
         }
@@ -283,7 +283,7 @@ window.gdd = function () {
     }
 
     var isReady = function () {
-       
+
 
         if (isNative()) {
 
@@ -409,7 +409,7 @@ window.gdd = function () {
                                 } else {
                                     //alert("TEST NOTICE: DeviceID is different. Updating Server: " + localDeviceId + " vs " + latestDeviceId)
 
-                                    var data = { "deviceId": latestDeviceId, "osType": osType,"personId":gdd.thisPerson.id() }
+                                    var data = { "deviceId": latestDeviceId, "osType": osType, "personId": gdd.thisPerson.id() }
                                     callApi(
                                         "Security/UpdateUsersDeviceID",
                                         "GET",
@@ -719,205 +719,14 @@ window.gdd = function () {
     //#endregion
 
     //#region NEWS/PRAYER
-    var getNewsItems = function (getFromServer, complete, fail) {
-
-        var reload = false;
-        var newsChannelKey = "newsChannels"
-
-        var prepareNewsViewModel = function (newsItems) {
-
-            gdd.newsItems.removeAll();
-            gdd.newsCountries.removeAll();
-            gdd.newsTypes.removeAll();
-
-            $.each(newsItems, function (i, elem) {
-                gdd.newsItems.push(elem)
-
-                if (gdd.newsCountries().indexOf(elem.country) === -1) {
-                    gdd.newsCountries.push(elem.country)
-                }
-
-                if (gdd.newsTypes().indexOf(elem.type) === -1) {
-                    gdd.newsTypes.push(elem.type)
-                }
-            })
-
-            hideLoader()
-            complete()
-        }
-
-        if (getFromServer) {
-            reload = true;
-
-        } else {
-            if (gdd.newsCountries().length > 0) {
-                reload = false;
-                complete();
-            } else {
-                var news = localStorage.getItem(newsChannelKey);
-
-                if (news) {
-
-                    news = $.parseJSON(news);
-
-                    if (news.length > 0) {
-                        prepareNewsViewModel(news);
-                        reload = false;
-                        complete()
-                    } else {
-                        reload = true;
-                    }
-                } else {
-                    reload = true;
-                }
-            }
-        }
-
-        if (reload) {
-
-            showLoader("Fetching news items...")
-            callApi(
-                   "News/GetNewsItems",
-                   "GET",
-                   { "portalId": gdd.config.portalId() },
-                           function (obj) {
-
-                               gdd.newsItems.removeAll();
-                               gdd.newsCountries.removeAll();
-                               gdd.newsTypes.removeAll();
-
-                               localStorage.removeItem(newsChannelKey)
-
-                               var channels = obj.gddData;
-
-                               var flattenedArray = new Array()
-
-                               $.each(channels, function (c, channel) {
-                                   $.each(channel.newsItems, function (n, item) {
-                                       item["channelId"] = channel.id;
-                                       item["channelName"] = channel.name;
-                                       item["channelDescription"] = channel.description;
-                                       item["portalId"] = channel.portalId;
-                                       item["portalName"] = channel.portalName;
-
-                                       flattenedArray.push(item)
-                                   });
-                               });
-
-                               if (flattenedArray.length > 0) {
-                                   localStorage.setItem(newsChannelKey, JSON.stringify(flattenedArray));
-                               }
-
-                               prepareNewsViewModel(flattenedArray)
-                           },
-                           function (msg) {
-                               hideLoader();
-                               fail(msg)
-                           })
-        }
 
 
-    }
+  
 
-    var configureNewsItemWebLink = function () {
-
-        if (gdd.selectedNewsItem.url()) {
-
-            if (isNative()) {
-                try {
-
-                    $(".btnNewsItemWebUrl").attr("href", "#").removeAttr("target")
-                    $(".btnNewsItemWebUrl").one(userClick, function () {
-                        try {
-                            var inAppBrowser = window.open(gdd.selectedNewsItem.url(), '_system', 'location=yes,closebuttoncaption=Done/Close');
-                        }
-                        catch (e) {
-                            showErrMsg("We cannot load the browser on this device: " + e)
-                        };
-                    })
-                }
-                catch (e) {
-                    showErrMsg("We cannot load the browser on this device: " + e)
-                }
-            } else {
-                $(".btnNewsItemWebUrl").attr("href", gdd.selectedNewsItem.url()).attr("target", "_blank")
-            }
-        } else {
-            $(".btnNewsItemWebUrl").hide();
-        }
-
-
-    }
-
-    var changeNewsItem = function (next, forNews) {
-
-        $(".newsListItem").fadeOut(function () {
-
-            var totalIndexedItems = 0;
-            var currIndex = 0;
-            var nextIndexItem = 0;
-
-
-            var availableItems = new Array()
-
-            if (forNews) {
-                availableItems = $.grep(gdd.newsItems(), function (ni, n) {
-                    return (ni.forNews)
-                })
-            } else {
-                availableItems = $.grep(gdd.newsItems(), function (ni, n) {
-                    return (ni.forPrayer)
-                })
-            }
+    
 
 
 
-
-            if (availableItems.length > 0) {
-                totalIndexedItems = availableItems.length - 1
-
-                var currItem = $.grep(availableItems, function (ni, n) {
-                    return (ni.id == gdd.selectedNewsItem.id())
-                })
-
-                if (currItem.length > 0) {
-                    currIndex = availableItems.indexOf(currItem[0])
-                }
-
-                if (next) {
-                    if (currIndex == totalIndexedItems) {
-                        nextIndexItem = 0
-                    } else {
-                        nextIndexItem = currIndex + 1;
-                    }
-                } else {
-                    if (currIndex == 0) {
-                        nextIndexItem = totalIndexedItems
-                    } else {
-                        nextIndexItem = currIndex - 1
-                    }
-                }
-
-                var nextItem = null
-                $.each(availableItems, function (i, elem) {
-                    if (availableItems.indexOf(elem) == nextIndexItem) {
-                        nextItem = elem
-                    }
-                })
-
-                ko.mapping.mergeFromJS(gdd.selectedNewsItem, nextItem);
-
-            }
-
-            configureNewsItemWebLink();
-
-            $(".newsListItem").fadeIn();
-        })
-
-
-
-
-    }
     //#endregion
 
 
@@ -944,32 +753,12 @@ window.gdd = function () {
             lastName: ko.observable(''),
             email: ko.observable(''),
             mobileNumber: ko.observable(''),
-            subscribed: ko.observable(false)
-        },
-        selectedNewsItem: {
-            id: ko.observable('-1'),
-            title: ko.observable(''),
-            content: ko.observable(''),
-            country: ko.observable(''),
-            type: ko.observable(''),
-            headerImageUrl: ko.observable(''),
-            headerVideoUrl: ko.observable(''),
-            displayHeader: ko.observable(true),
-            channelName: ko.observable(''),
-            channelDescription: ko.observable(''),
-            channelId: ko.observable(''),
-            portalId: ko.observable(''),
-            portalName: ko.observable(''),
-            url: ko.observable(''),
-            headerIsImage: ko.observable(true),
-
-
-
+            subscribed: ko.observable(false),
+            sendEmail: ko.observable(false),
         },
 
-        newsItems: ko.observableArray(),
-        newsCountries: ko.observableArray(),
-        newsTypes: ko.observableArray(),
+
+
         activePage: null,
         previousPage: null,
         appInitialized: false,
@@ -1002,7 +791,7 @@ window.gdd = function () {
 
             gdd.appInitialized = true;
 
-           // alert("Base App Initialized")
+            // alert("Base App Initialized")
 
             //becuase we know this routine is called in the index page we call the show method here rather
             //than the loadPage method. If we call load page here the pagecontainer events do not fire as the index page already is
@@ -1014,9 +803,9 @@ window.gdd = function () {
         },
         phoneGap: {
             onDeviceReady: function () {
-               // alert("Device ready fired")
+                // alert("Device ready fired")
                 try {
-                  deviceIsReady = true;
+                    deviceIsReady = true;
 
                     try {
 
@@ -1035,11 +824,11 @@ window.gdd = function () {
 
                     //alert("Device Is Ready is set")
 
-                   // document.addEventListener("pause", gdd.init.onPause, false);
+                    // document.addEventListener("pause", gdd.init.onPause, false);
 
-                   // document.addEventListener("resume", gdd.init.onAppResume, false);
+                    // document.addEventListener("resume", gdd.init.onAppResume, false);
 
-                   // document.addEventListener("menubutton", gdd.init.onMenuKeyDown, false);
+                    // document.addEventListener("menubutton", gdd.init.onMenuKeyDown, false);
 
                     //document.addEventListener("offline", gdd.init.wentOffline, false);
 
@@ -1067,7 +856,7 @@ window.gdd = function () {
                     runLoadingProcess: function () {
 
                         var attemptCount = 0;
-                     
+
                         var checkProgress = function () {
                             if ((isOnline()) && (isReady())) {
 
@@ -1083,7 +872,7 @@ window.gdd = function () {
                                             $("#indexPageErrMsg").html("Error: " + err)
                                         })
 
-                               
+
 
                             } else {
                                 attemptCount += 1;
@@ -1106,7 +895,7 @@ window.gdd = function () {
                                 }
                             }
                         }
-                  
+
                         checkProgress();
 
                     },
@@ -1143,17 +932,22 @@ window.gdd = function () {
                 id: "pg_about",
                 path: "about.html",
                 view: {
-                  
+
                     show: function () {
 
                         var init = function () {
 
-                           
+
                         }
 
                         init()
 
-                       
+                        var appCode= headers.appInfo.split("|")[0].split(":")[1];
+                        var version= headers.appInfo.split("|")[1].split(":")[1];
+
+                        $("#aboutVersionInfo").html("App Code: " + appCode + ", Version: " + version )
+
+                        
                     }
                 },
             },
@@ -1166,28 +960,94 @@ window.gdd = function () {
                     show: function () {
 
                         var displayMissingFieldMsg = function () {
-                            if (gdd.config.subsFieldId()) {
+                            if (gdd.config.portalId()) {
                                 $("#homeAccErrMsg").hide()
                             } else {
-                                $("#homeAccErrMsg").html("The subscription code has not been configured for this app. Please notify the administrator in your church/ministry.")
+                                $("#homeAccErrMsg").html("The portal code has not been configured for this app. Please notify the administrator in your church/ministry.")
                                 $("#homeAccErrMsg").show()
                             }
                         }
 
                         var init = function () {
 
-                            
+
                             $("#btnAboutPgHome").on(userTap, function () {
                                 loadPage(gdd.pages.about, pageTransitionOne)
                             })
 
 
                             $("#btnGoToNewsPgHome").on(userTap, function () {
-                                loadPage(gdd.pages.news, pageTransitionOne)
+
+                                if (accountIsSynced()) {
+                                    gdd.pages.news.view.forPrayer = false;
+                                    loadPage(gdd.pages.news, pageTransitionOne)
+                                } else {
+                                    showMsg("Your profile is not yet synced with this application.<p>In order for us to deliver only the news items you may be interested in we need to sync this account.</p>", function () {
+
+                                        gdd.pages.person.view.finishedButtonText = "PROCEED TO 'NEWS'"
+
+                                        gdd.pages.person.view.callback = function () {
+
+                                            if (gdd.pages.person.view.status === 1) {
+                                                if (accountIsSynced()) {
+                                                    gdd.pages.news.view.forPrayer = false;
+                                                    loadPage(gdd.pages.news, pageTransitionOne)
+                                                } else {
+
+                                                    showMsg("We cannot take you to the news feeds until this account is synced.", function () {
+                                                        loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                                    })
+                                                }
+                                            } else {
+                                                loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                            }
+                                        }
+
+                                        loadPage(gdd.pages.person, pageTransitionOne)
+
+                                    })
+                                }
+
+
+
                             })
 
                             $("#btnGoToPrayPgHome").on(userTap, function () {
-                                loadPage(gdd.pages.pray, pageTransitionOne)
+
+
+                                if (accountIsSynced()) {
+                                    gdd.pages.news.view.forPrayer = true;
+                                    loadPage(gdd.pages.news, pageTransitionOne)
+                                } else {
+                                    showMsg("Your profile is not yet synced with this application.<p>In order for us to deliver only the prayer items you may be interested in we need to sync this account.</p>", function () {
+
+                                        gdd.pages.person.view.finishedButtonText = "PROCEED TO 'PRAY'"
+
+                                        gdd.pages.person.view.callback = function () {
+
+                                            if (gdd.pages.person.view.status === 1) {
+                                                if (accountIsSynced()) {
+                                                    gdd.pages.news.view.forPrayer = true;
+                                                    loadPage(gdd.pages.news, pageTransitionOne)
+                                                } else {
+
+                                                    showMsg("We cannot take you to the prayer feeds until this account is synced.", function () {
+                                                        loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                                    })
+                                                }
+                                            } else {
+                                                loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                            }
+                                        }
+
+                                        loadPage(gdd.pages.person, pageTransitionOne)
+
+                                    })
+                                }
+
+
+
+
                             })
 
                             $("#btnGoToGivePgHome").on(userTap, function () {
@@ -1288,7 +1148,7 @@ window.gdd = function () {
 
                             })
 
-                            
+
 
                             $("#btnClearAllData").on(userTap, function () {
 
@@ -1316,7 +1176,7 @@ window.gdd = function () {
 
                             $("#btnReloadConfig").on(userTap, function () {
 
-                              
+
                                 showLoader("Loading configuration...")
                                 checkConfigData(
                                     true,
@@ -1337,7 +1197,7 @@ window.gdd = function () {
                             })
 
                             $("#btnViewAccountPgHome").on(userTap, function () {
-                                gdd.pages.person.view.finishedButtonText = "CLICK HERE WHEN YOU ARE DONE"
+                                gdd.pages.person.view.finishedButtonText = "PROCEED..."
                                 gdd.pages.person.view.callback = function () {
                                     loadPage(gdd.pages.home, pageTransitionOneReverse)
                                 }
@@ -1345,7 +1205,7 @@ window.gdd = function () {
                             })
 
                             $("#btnCompleteSetupPgHome").on(userTap, function () {
-                                gdd.pages.person.view.finishedButtonText = "CLICK HERE WHEN YOU ARE DONE"
+                                gdd.pages.person.view.finishedButtonText = "PROCEED..."
                                 gdd.pages.person.view.callback = function () {
                                     loadPage(gdd.pages.home, pageTransitionOneReverse)
                                 }
@@ -1386,181 +1246,415 @@ window.gdd = function () {
                     }
                 }
             },
+
+
             news: {
+
                 id: "pg_news",
                 path: "news.html",
                 view: {
-                    show: function () {
+                    forPrayer: true,
+                    selectedNewsItem: {
+                        id: ko.observable(-1),
+                        title: ko.observable(''),
+                        content: ko.observable(''),
+                        country: ko.observable(''),
+                        type: ko.observable(''),
+                        headerImageUrl: ko.observable(''),
+                        headerVideoUrl: ko.observable(''),
+                        displayHeader: ko.observable(true),
+                        channelName: ko.observable(''),
+                        channelDescription: ko.observable(''),
+                        channelId: ko.observable(''),
+                        portalId: ko.observable(''),
+                        portalName: ko.observable(''),
+                        url: ko.observable(''),
+                        headerIsImage: ko.observable(true),
+                        tagLine: ko.observable(''),
 
-                        var configureDisplay = function () {
-                            var arr = new Array()
 
-                            arr = $.grep(gdd.newsItems(), function (ni, i) {
-                                return (ni.forNews)
+                    },
+                    countries: ko.observableArray(),
+                    newsItems: ko.observableArray(),
+                    types: ko.observableArray(),
+                    loadNewsItems: function (getFromServer, complete, fail) {
+
+                        var reload = false;
+                        var newsChannelKey = "newsChannels"
+
+                        var prepareNewsViewModel = function (newsItems) {
+
+                            gdd.pages.news.view.newsItems.removeAll();
+                            gdd.pages.news.view.countries.removeAll();
+                            gdd.pages.news.view.types.removeAll();
+
+                            $.each(newsItems, function (i, elem) {
+                                gdd.pages.news.view.newsItems.push(elem)
+
+                                if (gdd.pages.news.view.countries().indexOf(elem.country) === -1) {
+                                    gdd.pages.news.view.countries.push(elem.country)
+                                }
+
+                                if (gdd.pages.news.view.types().indexOf(elem.type) === -1) {
+                                    gdd.pages.news.view.types.push(elem.type)
+                                }
                             })
 
-                            if (arr.length > 0) {
+                            hideLoader()
+                            complete()
+                        }
 
-                                ko.mapping.mergeFromJS(gdd.selectedNewsItem, arr[0]);
-                                configureNewsItemWebLink();
-                                $("#noNewsItems").hide()
-                                $("#newsItems").fadeIn()
+                        if (getFromServer) {
+                            reload = true;
+
+                        } else {
+                            if (gdd.pages.news.view.countries().length > 0) {
+                                reload = false;
+                                complete();
                             } else {
-                                $("#newsItems").hide()
-                                $("#noNewsItems").fadeIn()
+                                var news = localStorage.getItem(newsChannelKey);
+
+                                if (news) {
+
+                                    news = $.parseJSON(news);
+
+                                    if (news.length > 0) {
+                                        prepareNewsViewModel(news);
+                                        reload = false;
+                                        complete()
+                                    } else {
+                                        reload = true;
+                                    }
+                                } else {
+                                    reload = true;
+                                }
                             }
                         }
+
+
+                        if (reload) {
+
+                            showLoader("Fetching news items...")
+                            callApi(
+                                   "News/GetPersonsUnreadNewsItems",
+                                   "GET",
+                                   { "portalId": gdd.config.portalId(), "personId": gdd.thisPerson.id() },
+                                           function (obj) {
+
+
+
+                                               localStorage.removeItem(newsChannelKey)
+
+                                               var channels = obj.gddData;
+
+                                               var flattenedArray = new Array()
+
+                                               $.each(channels, function (c, channel) {
+                                                   $.each(channel.newsItems, function (n, item) {
+                                                       item["channelId"] = channel.id;
+                                                       item["channelName"] = channel.name;
+                                                       item["channelDescription"] = channel.description;
+                                                       item["portalId"] = channel.portalId;
+                                                       item["portalName"] = channel.portalName;
+
+                                                       flattenedArray.push(item)
+                                                   });
+                                               });
+
+                                               if (flattenedArray.length > 0) {
+                                                   localStorage.setItem(newsChannelKey, JSON.stringify(flattenedArray));
+                                               }
+
+                                               prepareNewsViewModel(flattenedArray)
+                                           },
+                                           function (msg) {
+                                               hideLoader();
+                                               fail(msg)
+                                           })
+                        }
+
+
+                    },
+                    showNoItemsView: function () {
+                        if (gdd.pages.news.view.forPrayer) {
+                            $.when($(".newsItemSubView").not(".noPrayerItemsView").fadeOut()).then(function () {
+                                $(".noPrayerItemsView").fadeIn()
+                            })
+                        } else {
+                            $.when($(".newsItemSubView").not(".noNewsItemsView").fadeOut()).then(function () {
+                                $(".noNewsItemsView").fadeIn()
+                            })
+                        }
+                    },
+                    showSelectedItemView: function () {
+                        $.when($(".newsItemSubView").not(".selectedItemView").fadeOut()).then(function () {
+                            $(".selectedItemView").fadeIn()
+                        })
+                    },
+
+
+
+                     markNewsItemAsRead : function (complete) {
+
+                        showLoader("Updating...")
+                        callApi(
+                               "News/MarkItemAsRead",
+                               "GET",
+                               { "personId": gdd.thisPerson.id(), "newsItemId": gdd.pages.news.view.selectedNewsItem.id() },
+                                       function (obj) {
+
+                                           var arr = $.grep(gdd.pages.news.view.newsItems(), function (ni, i) {
+                                               return ni.id == gdd.pages.news.view.selectedNewsItem.id();
+                                           })
+
+                                           if (arr.length > 0) {
+                                               gdd.pages.news.view.newsItems.splice(gdd.pages.news.view.newsItems.indexOf(arr[0]), 1)
+                                           }
+
+                                           hideLoader();
+                                           
+                                           complete()
+                                          
+                                       },
+                                       function (msg) {
+                                           hideLoader();
+                                           showErrMsg(err);
+                                           complete()
+                                           
+                                           
+                                       })
+
+
+
+
+
+
+
+                    },
+
+
+
+                    setNewsItem: function (next) {
+
+                       
+
+                        var totalIndexedItems = 0;
+                        var currIndex = 0;
+                        var nextIndexItem = 0;
+
+                        var availableItems = new Array()
+
+                        if (gdd.pages.news.view.forPrayer) {
+                            availableItems = $.grep(gdd.pages.news.view.newsItems(), function (ni, n) {
+                                return (ni.forPrayer)
+                            })
+                        } else {
+                            availableItems = $.grep(gdd.pages.news.view.newsItems(), function (ni, n) {
+                                return (ni.forNews)
+                            })
+                        }
+
+                        $(".newsFooterCmds").attr("disabled", "disabled");
+
+                        if (availableItems.length > 0) {
+
+                            totalIndexedItems = availableItems.length - 1
+
+                            var currItem = $.grep(availableItems, function (ni, n) {
+                                return (ni.id == gdd.pages.news.view.selectedNewsItem.id())
+                            })
+
+                            if (currItem.length > 0) {
+                                currIndex = availableItems.indexOf(currItem[0])
+                            }
+
+                            if (next) {
+                                if (currIndex == totalIndexedItems) {
+                                    nextIndexItem = 0
+                                } else {
+                                    nextIndexItem = currIndex + 1;
+                                }
+                            } else {
+                                if (currIndex == 0) {
+                                    nextIndexItem = totalIndexedItems
+                                } else {
+                                    nextIndexItem = currIndex - 1
+                                }
+                            }
+
+                            var nextItem = null
+                            $.each(availableItems, function (i, elem) {
+                                if (availableItems.indexOf(elem) == nextIndexItem) {
+                                    nextItem = elem
+                                }
+                            })
+
+                            $("#btnMarkNewsItemAsRead").removeAttr("disabled")
+
+                            if (isNative()) {
+                                $("#btnShareNewsItem").removeAttr("disabled")
+                            }
+
+                             $(".newsItemCount").html(nextIndexItem + 1 + ' of ' + availableItems.length)
+
+                             ko.mapping.mergeFromJS(gdd.pages.news.view.selectedNewsItem, nextItem);
+
+
+                             if (gdd.pages.news.view.selectedNewsItem.url()) {
+
+                                 if (isNative()) {
+                                     try {
+
+                                         $(".btnNewsItemWebUrl").attr("href", "#").removeAttr("target")
+                                         $(".btnNewsItemWebUrl").one(userClick, function () {
+                                             try {
+                                                 var inAppBrowser = window.open(gdd.pages.news.view.selectedNewsItem.url(), '_system', 'location=yes,closebuttoncaption=Done/Close');
+                                             }
+                                             catch (e) {
+                                                 showErrMsg("We cannot load the browser on this device: " + e)
+                                             };
+                                         })
+                                         $(".btnNewsItemWebUrl").show();
+                                     }
+                                     catch (e) {
+                                         showErrMsg("We cannot load the browser on this device: " + e)
+                                     }
+                                 } else {
+                                     $(".btnNewsItemWebUrl").attr("href", gdd.pages.news.view.selectedNewsItem.url()).attr("target", "_blank")
+                                     $(".btnNewsItemWebUrl").show();
+                                 }
+                             } else {
+                                 $(".btnNewsItemWebUrl").hide();
+                             }
+
+
+                             
+                        } else {
+
+                            gdd.pages.news.view.selectedNewsItem.id(-1)
+
+
+                        }
+
+
+
+                    },
+
+
+
+                    show: function () {
+
+
 
                         var init = function () {
 
                             ko.applyBindings(gdd, document.getElementById("pg_news"));
 
-                            $(".refreshNewsFeeds").off().on(userTap, function () {
-                                getNewsItems(
+                            $(".refreshNewsItems").off().on(userTap, function () {
+
+                                gdd.pages.news.view.loadNewsItems(
                                     true,
                                     function () {
-                                        configureDisplay();
+                                        gdd.pages.news.view.setNewsItem(true)
+
+                                       // $(".selectedItemView").show()
+                                        if (gdd.pages.news.view.selectedNewsItem.id() > 0) {
+                                            gdd.pages.news.view.showSelectedItemView();
+                                        } else {
+                                            gdd.pages.news.view.showNoItemsView()
+                                        }
+
+
                                     },
                                     function (err) {
                                         showErrMsg(err)
-                                    })
+                                    });
+
+                               
                             })
 
                             $(".btnNextNewsItem").off().on(userTap, function () {
-                                changeNewsItem(true, true)
+                                $("#newsListItem").fadeOut(function () {
+                                    gdd.pages.news.view.setNewsItem(true)
+                                    $("#newsListItem").fadeIn()
+                                })
                             });
 
                             $("#pg_news").on("swipeleft", function () {
-                                changeNewsItem(true, true)
+                                $("#newsListItem").fadeOut(function () {
+                                    gdd.pages.news.view.setNewsItem(true)
+                                    $("#newsListItem").fadeIn()
+                                })
                             });
 
                             $("#pg_news").on("swiperight", function () {
-                                changeNewsItem(true, true)
+                                $("#newsListItem").fadeOut(function () {
+                                    gdd.pages.news.view.setNewsItem(false)
+                                    $("#newsListItem").fadeIn()
+                                })
                             });
 
                             $(".btnPreviousNewsItem").off().on(userTap, function () {
-                                changeNewsItem(false, true)
+                                $("#newsListItem").fadeOut(function () {
+                                    gdd.pages.news.view.setNewsItem(false)
+                                    $("#newsListItem").fadeIn()
+                                })
                             });
 
-                            $(".btnShareNewsItem").off().on(userTap, function () {
-                                if (isNative()) {
-                                    var msg = ""
-                                    if (gdd.selectedNewsItem.url()) {
-                                        msg="I would like to share the news story with you. " + gdd.selectedNewsItem.url()
-                                    } else {
-                                        msg = "I would like to share the news story with you....(fill in the rest here)"
+                            $("#btnMarkNewsItemAsRead").off().on(userClick, function () {
+                                gdd.pages.news.view.markNewsItemAsRead(function () {
 
-                                    }
+                                    gdd.pages.news.view.setNewsItem(true)
 
-                                    window.plugins.socialsharing.share(msg)
-                                } else {
-                                    showMsg("Sharing is only available in the native version of this application, not the browser version.")
-                                }
+                                    if (gdd.pages.news.view.selectedNewsItem.id() < 0) {
+                                        gdd.pages.news.view.loadNewsItems(
+                                            true,
+                                            function () {
+                                                gdd.pages.news.view.setNewsItem(true);
+
+                                                if (gdd.pages.news.view.selectedNewsItem.id() < 0) {
+                                                    gdd.pages.news.view.showNoItemsView();
+                                                }
+
+                                            },
+                                            function (err) {
+                                                showErrMsg(err)
+                                            });
+                                    } 
+                                })
                             });
 
-                            
                         }
+
                         init()
 
-                        getNewsItems(
-                            false,
-                            function () {
-                                configureDisplay();
+                        if (gdd.pages.news.view.forPrayer) {
+                            $("#newsHeader").html("Pray")
+                        } else {
+                            $("#newsHeader").html("News")
+                        }
 
-                            },
+                        gdd.pages.news.view.loadNewsItems(
+                        false,
+                        function () {
+                            gdd.pages.news.view.setNewsItem(true)
 
-                            function (err) {
-                                showErrMsg(err)
-                            })
-                    }
-                },
-            },
-            pray: {
-                id: "pg_pray",
-                path: "pray.html",
-                view: {
-                    show: function () {
-                        var configureDisplay = function () {
-                            var arr = new Array()
-                            arr = $.grep(gdd.newsItems(), function (ni, i) {
-                                return (ni.forPrayer)
-                            })
-
-                            if (arr.length > 0) {
-
-                                ko.mapping.mergeFromJS(gdd.selectedNewsItem, arr[0]);
-                                configureNewsItemWebLink();
-                                $("#noPrayerItems").hide()
-                                $("#prayerItems").fadeIn()
+                            if (gdd.pages.news.view.selectedNewsItem.id() > 0) {
+                                gdd.pages.news.view.showSelectedItemView()
                             } else {
-                                $("#prayerItems").hide()
-                                $("#noPrayerItems").fadeIn()
-
+                                gdd.pages.news.view.showNoItemsView();
                             }
-                        }
-                        var init = function () {
 
-                            ko.applyBindings(gdd, document.getElementById("pg_pray"));
-
-                            $(".refreshNewsFeeds").off().on(userTap, function () {
-                                getNewsItems(
-                                    true,
-                                    function () {
-                                        configureDisplay();
-                                    },
-                                    function (err) {
-                                        showErrMsg(err)
-                                    })
-                            })
-
-                            $(".btnNextPrayerItem").off().on(userTap, function () {
-                                changeNewsItem(true, false)
-                            });
-
-                            $("#pg_pray").on("swipeleft", function () {
-                                changeNewsItem(true, false)
-                            });
-
-                            $("#pg_pray").on("swiperight", function () {
-                                changeNewsItem(true, false)
-                            });
-
-                            $(".btnPreviousNewsItem").off().on(userTap, function () {
-                                changeNewsItem(false, false)
-                            });
-
-                            $(".btnShareNewsItem").off().on(userTap, function () {
-                                if (isNative()) {
-                                    var msg = ""
-                                    if (gdd.selectedNewsItem.url()) {
-                                        msg = "I would like to share this prayer item with you. " + gdd.selectedNewsItem.url()
-                                    } else {
-                                        msg = "I would like to share thi prayer item with you...."
-
-                                    }
-
-                                    window.plugins.socialsharing.share(msg)
-                                } else {
-                                    showMsg("Sharing is only available in the native version of this application, not the browser version.")
-                                }
-                            });
-                        }
-                        init();
-
-                        getNewsItems(
-                          false,
-                          function () {
-
-                              configureDisplay();
+                        },
+                        function (err) {
+                            showErrMsg(err)
+                        })
 
 
-                          },
-                          function (err) {
-                              showErrMsg(err)
-                          })
                     }
                 },
             },
+
             give: {
                 id: "pg_give",
                 path: "give.html",
@@ -1573,7 +1667,7 @@ window.gdd = function () {
                         portalName: ko.observable(''),
                         title: ko.observable(''),
                         description: ko.observable(''),
-                        toc: ko.observable(''),
+                        agreeTo: ko.observable(''),
                         thankYouText: ko.observable(''),
                         userChanged: ko.observable(''),
                         dateChanged: ko.observable(''),
@@ -1731,103 +1825,125 @@ window.gdd = function () {
 
                             $("#btnUpdatePledge").off().on(userTap, function () {
 
-                                var isValid = true;
-                                var inValidMsg = "";
 
-                                if (gdd.pages.give.view.myPledge.personId() < 0) {
-                                    if ((!gdd.pages.give.view.myPledge.firstName()) || (!gdd.pages.give.view.myPledge.lastName()) || (!gdd.pages.give.view.myPledge.email()) || (!gdd.pages.give.view.myPledge.telNumber())) {
-                                        isValid = false;
-                                        inValidMsg = "<p>You have not provided enough personal information for us to capture this pledge</p><p>We require you to provide us with your name, email and telephone number</p>"
+                               
+
+                                $("#popupGiveAgree").popup("open", {"transition":"pop"})
+
+
+                            });
+
+                            $("#btnGiveIAgree").off().on(userClick, function () {
+
+                                var userAgreed = function () {
+                                    var isValid = true;
+                                    var inValidMsg = "";
+
+                                    if (gdd.pages.give.view.myPledge.personId() < 0) {
+                                        if ((!gdd.pages.give.view.myPledge.firstName()) || (!gdd.pages.give.view.myPledge.lastName()) || (!gdd.pages.give.view.myPledge.email()) || (!gdd.pages.give.view.myPledge.telNumber())) {
+                                            isValid = false;
+                                            inValidMsg = "<p>You have not provided enough personal information for us to capture this pledge</p><p>We require you to provide us with your name, email and telephone number</p>"
+                                        }
                                     }
-                                }
 
-                                if (gdd.pages.give.view.myPledge.type() == "1") {
-                                    if (!gdd.pages.give.view.myPledge.accNumber()) {
-                                        isValid = false;
-                                        inValidMsg = "You must provide us with a valid credit card number."
-                                    }
+                                    if (gdd.pages.give.view.myPledge.type() == "1") {
+                                        if (!gdd.pages.give.view.myPledge.accNumber()) {
+                                            isValid = false;
+                                            inValidMsg = "You must provide us with a valid credit card number."
+                                        }
 
-                                    if (!gdd.pages.give.view.myPledge.accName()) {
-                                        isValid = false;
-                                        inValidMsg = "You must provide us with the name on your credit card."
-                                    }
+                                        if (!gdd.pages.give.view.myPledge.accName()) {
+                                            isValid = false;
+                                            inValidMsg = "You must provide us with the name on your credit card."
+                                        }
 
-                                    if (!$.isNumeric(gdd.pages.give.view.myPledge.cvc())) {
-                                        isValid = false;
-                                        inValidMsg = "Please enter a valid cvc number."
-                                    } else {
-                                        if (gdd.pages.give.view.myPledge.cvc() < 0) {
+                                        if (!$.isNumeric(gdd.pages.give.view.myPledge.cvc())) {
                                             isValid = false;
                                             inValidMsg = "Please enter a valid cvc number."
                                         } else {
-                                            if ((gdd.pages.give.view.myPledge.cvc().length < 3) || (gdd.pages.give.view.myPledge.cvc().length > 4)) {
+                                            if (gdd.pages.give.view.myPledge.cvc() < 0) {
                                                 isValid = false;
                                                 inValidMsg = "Please enter a valid cvc number."
+                                            } else {
+                                                if ((gdd.pages.give.view.myPledge.cvc().length < 3) || (gdd.pages.give.view.myPledge.cvc().length > 4)) {
+                                                    isValid = false;
+                                                    inValidMsg = "Please enter a valid cvc number."
+                                                }
                                             }
                                         }
-                                    }
-                                } else {
+                                    } else {
 
-                                    if (!gdd.pages.give.view.myPledge.accNumber()) {
-                                        isValid = false;
-                                        inValidMsg = "You must provide us with the bank account number."
+                                        if (!gdd.pages.give.view.myPledge.accNumber()) {
+                                            isValid = false;
+                                            inValidMsg = "You must provide us with the bank account number."
+                                        }
+
+                                        if (!gdd.pages.give.view.myPledge.accName()) {
+                                            isValid = false;
+                                            inValidMsg = "You must provide us with the name of the bank account."
+                                        }
+
+                                        if (!gdd.pages.give.view.myPledge.branchCode()) {
+                                            isValid = false;
+                                            inValidMsg = "Please enter the branch code of the bank account."
+                                        }
                                     }
 
-                                    if (!gdd.pages.give.view.myPledge.accName()) {
-                                        isValid = false;
-                                        inValidMsg = "You must provide us with the name of the bank account."
-                                    }
+                                    if (isValid) {
 
-                                    if (!gdd.pages.give.view.myPledge.branchCode()) {
-                                        isValid = false;
-                                        inValidMsg = "Please enter the branch code of the bank account."
+
+
+                                        showLoader("Saving pledge...")
+
+                                        callApi(
+                                            "Financial/CaptureRemotePledge",
+                                            "POST",
+                                            ko.mapping.toJS(gdd.pages.give.view.myPledge),
+                                              function (obj) {
+
+                                                  hideLoader()
+                                                  var pledge = obj.gddData[0]
+
+                                                  if (gdd.thisPerson.id() < 0) {
+                                                      gdd.thisPerson.id(pledge.personId)
+
+                                                      localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
+                                                  }
+
+                                                  $("#popupPledgeThankYouMessage").one("popupafterclose", function (event, ui) {
+                                                      loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                                  });
+
+                                                  $("#popupPledgeThankYouMessage").popup("open", { "transition": "pop" })
+                                              },
+                                              function (msg) {
+                                                  hideLoader()
+                                                  showErrMsg(msg)
+                                              })
+
+
+
+                                        // alert(JSON.stringify(ko.mapping.toJS(gdd.pages.give.view.myPledge)))
+
+                                    } else {
+                                        showMsg(inValidMsg)
                                     }
                                 }
 
-                                if (isValid) {
+                                $("#popupGiveAgree").one("popupafterclose", function () {
+                                    userAgreed()
+                                })
 
-
-
-                                    showLoader("Saving pledge...")
-
-                                    callApi(
-                                        "Financial/CaptureRemotePledge",
-                                        "POST",
-                                        ko.mapping.toJS(gdd.pages.give.view.myPledge),
-                                          function (obj) {
-
-                                              hideLoader()
-                                              var pledge = obj.gddData[0]
-
-                                              if (gdd.thisPerson.id() < 0) {
-                                                  gdd.thisPerson.id(pledge.personId)
-
-                                                  localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
-                                              }
-
-                                              $("#popupPledgeThankYouMessage").one("popupafterclose", function (event, ui) {
-                                                  loadPage(gdd.pages.home, pageTransitionOneReverse)
-                                              });
-
-                                              $("#popupPledgeThankYouMessage").popup("open", { "transition": "pop" })
-                                          },
-                                          function (msg) {
-                                              hideLoader()
-                                              showErrMsg(msg)
-                                          })
-
-
-
-
-
-
-                                    // alert(JSON.stringify(ko.mapping.toJS(gdd.pages.give.view.myPledge)))
-
-                                } else {
-                                    showMsg(inValidMsg)
-                                }
-
+                                $("#popupGiveAgree").popup("close")
                             });
+                            $("#btnGiveNotAgree").off().on(userTap, function () {
+                                $("#popupGiveAgree").one("popupafterclose", function () {
+                                   showMsg("You must agree to the terms and conditions before we can process this request.")
+                                })
+
+                                $("#popupGiveAgree").popup("close")
+                            });
+
 
                             $(".btnGiveGoTo1").off().on(userTap, function () {
                                 gdd.pages.give.view.showGiveOne()
@@ -2371,7 +2487,7 @@ window.gdd = function () {
 
 
 
-                                    $(".btnLinkMissingData").off().on(userClick, function () {
+                                    $(".btnLinkChurchSearchMissingData").off().on(userClick, function () {
                                         gdd.pages.churches.view.showMissingGeoStructure()
                                     })
 
@@ -2532,7 +2648,7 @@ window.gdd = function () {
                 id: "pg_person",
                 path: "person.html",
                 view: {
-                    action: -1,
+                   
                     callback: null,
                     finishedButtonText: '',
                     status: 1, //1-done,2-cancelled
@@ -2540,12 +2656,15 @@ window.gdd = function () {
 
                         var showFindAccount = function () {
                             $.when($(".personSubView").not(".personTryFindView").hide()).then(function () {
+                               
                                 $(".personTryFindView").fadeIn();
                             })
                         }
 
                         var showAccountInfo = function () {
                             $.when($(".personSubView").not(".personInfoView").hide()).then(function () {
+                                $("#sendEmailCheckBox").hide()
+                             
                                 $(".pInfoInput").removeAttr("disabled")
 
                                 if (gdd.thisPerson.id()) {
@@ -2555,6 +2674,11 @@ window.gdd = function () {
                                         $(".pInfoSynced").show()
 
                                         $(".pInfoInput").attr("disabled", "disabled")
+
+                                        if (accountIsSynced()) {
+                                            $("#sendEmailCheckBox").show()
+                                        }
+
                                     } else {
                                         $(".pInfoSynced").hide()
                                         $("#pInfoNotSynced").show()
@@ -2566,11 +2690,40 @@ window.gdd = function () {
                                 }
 
                                 $(".personInfoView").fadeIn();
+
+                                $("#chkBoxSendNIToEmail").checkboxradio("refresh");
                             })
                         }
 
                         $("#btnOKPgPersonalInfo").html(gdd.pages.person.view.finishedButtonText)
                         gdd.pages.person.view.status = 1;
+
+                        var maskEmail = function (email) {
+
+                            var email1 = email.split("@")[0]
+                            var email2 = email.split("@")[1]
+
+                            if (email1.length === 1) {
+                                email1 = email1
+                            } else {
+                                if (email1.length == 2) {
+                                    email1 = email1.substring(0, 1) + email1.substring(1).replace(/./g, "*");
+
+                                } else {
+                                    email1 = email1.substring(0, 2) + email1.substring(2).replace(/./g, "*");
+                                }
+                            }
+
+                            email2 = email2.substring(0, 4) + email2.substring(4).replace(/./g, "*");
+
+                            return email1 + '@' + email2
+                        }
+
+                        var maskMobile = function (mobileNumber) {
+
+                            return mobileNumber.substring(0, 5) + mobileNumber.substring(5).replace(/./g, "*");
+
+                        }
 
                         var init = function () {
 
@@ -2608,8 +2761,47 @@ window.gdd = function () {
                             }
 
 
+                            $("#chkBoxSendNIToEmail").off().on("change", function () {
+                                var check = $("#chkBoxSendNIToEmail").prop("checked");
+
+                                if (check) {
+                                    showLoader("Subscribing email...")
+
+                                } else {
+                                    showLoader("Removing email...")
+
+                                }
+
+                                var obj = {}
+                                obj.personId = gdd.thisPerson.id();
+                                obj.portalId = gdd.config.portalId();
+                                obj.subscribe = true;
+                                obj.sendEmail = check;
+
+                                callApi(
+                                   "News/UpdatePersonPortalNewsSubscription",
+                                   "POST",
+                                   obj,
+                                   function (obj) {
+                                       hideLoader()
+
+                                       gdd.thisPerson.subscribed(obj.gddData.subscribe)
+                                       gdd.thisPerson.sendEmail(obj.gddData.sendEmail)
+
+                                       localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
+                                       gdd.pages.person.view.status = 1;
+                                       gdd.pages.person.view.callback()
+
+                                   },
+                                   function (msg) {
+                                       hideLoader()
+                                       showErrMsg(msg)
+                                   })
+                            });
+
                             $("#btnCheckForAccount").off().on(userTap, function () {
-                                gdd.thisPerson.subscribed(false)
+                                gdd.thisPerson.subscribed(false);
+                                gdd.thisPerson.sendEmail(false);
                                 var isValid = true;
 
                                 var input = $("#txtPInfoFindAccount").val()
@@ -2652,36 +2844,21 @@ window.gdd = function () {
                                                     var theP = obj.gddData[0];
 
                                                     if (theP.email) {
-                                                        var email1 = theP.email.split("@")[0]
-                                                        var email2 = theP.email.split("@")[1]
-
-                                                        if (email1.length === 1) {
-                                                            email1 = email1
-                                                        } else {
-                                                            if (email1.length == 2) {
-                                                                email1 = email1.substring(0, 1) + email1.substring(1).replace(/./g, "*");
-
-                                                            } else {
-                                                                email1 = email1.substring(0, 2) + email1.substring(2).replace(/./g, "*");
-                                                            }
-                                                        }
-
-                                                        email2 = email2.substring(0, 4) + email2.substring(4).replace(/./g, "*");
-
-
-                                                        theP.email = email1 + '@' + email2
+                                                        theP.email = maskEmail(theP.email)
                                                     }
 
+
                                                     if (theP.mobileNumber) {
-                                                        theP.mobileNumber = theP.mobileNumber.substring(0, 5) + theP.mobileNumber.substring(5).replace(/./g, "*");
+                                                        theP.mobileNumber = maskMobile(theP.mobileNumber)
 
                                                     }
 
 
 
                                                     ko.mapping.mergeFromJS(gdd.thisPerson, theP);
-                                                    gdd.thisPerson.subscribed(false)
-                                                    localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(theP));
+                                                    gdd.thisPerson.subscribed(false);
+                                                    gdd.thisPerson.sendEmail(false);
+                                                    localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)));
                                                 }
                                             }
 
@@ -2689,9 +2866,9 @@ window.gdd = function () {
                                             if (found) {
                                                 showAccountInfo()
                                             } else {
-                                                showMsg("We were not able to find a matching account. Please enter the info on the next screen.", function () {
-                                                    showAccountInfo()
-                                                })
+                                                $("#popupCantFindPInfo").popup("open", { "transition": "pop" })
+
+                                               
                                             }
 
                                             hideLoader()
@@ -2708,11 +2885,22 @@ window.gdd = function () {
                                 }
 
 
+                            })
 
+                            
+                            $("#btnCantFindInfoAdd").off().on(userTap, function () {
 
+                                $("#popupCantFindPInfo").one("popupafterclose", function (event, ui) {
+                                    showAccountInfo()
+                                });
 
+                                $("#popupCantFindPInfo").popup("close")
 
+                            })
 
+                            $("#btnCantFindInfoTryAgain").off().on(userTap, function () {
+
+                                $("#popupCantFindPInfo").popup("close")
 
                             })
 
@@ -2722,56 +2910,7 @@ window.gdd = function () {
 
                             })
 
-                            $("#btnPersonalInfoAction").off().on(userClick, function () {
-                                $("#popupPersonsActionMenu").popup("open", { "transition": "pop" })
-                            })
-
-
-                            $("#popupPersonsActionMenu").on("popupafterclose", function (event, ui) {
-
-                                switch (gdd.pages.person.view.action) {
-
-
-                                    case 1: //not me
-                                        localStorage.removeItem(thisPersonLocalStoreKey)
-                                        gdd.thisPerson.id(-1)
-                                        gdd.thisPerson.firstName('')
-                                        gdd.thisPerson.lastName('')
-                                        gdd.thisPerson.email('')
-                                        gdd.thisPerson.mobileNumber('')
-                                        gdd.thisPerson.subscribed(false)
-
-                                        gdd.deviceId = null;
-
-                                        localStorage.removeItem(deviceIdKey)
-
-                                        showFindAccount()
-
-                                        gdd.pages.person.view.action = -1;
-                                        break;
-
-                                    case 2: //not me, try again
-
-                                        gdd.pages.person.view.status = 2;
-                                        gdd.pages.person.view.callback()
-
-                                        gdd.pages.person.view.action = -1;
-                                        break;
-
-
-                                    case 3: //cancel operation
-
-                                        gdd.pages.person.view.action = -1;
-                                        break;
-
-
-
-
-
-                                }
-                            })
-
-
+                           
 
                             $("#btnOKPgPersonalInfo").off().on(userTap, function () {
 
@@ -2781,38 +2920,55 @@ window.gdd = function () {
 
                                         showLoader("Syncing account...")
 
+                                        var obj = {};
+                                        obj.id = -1;
+                                        obj.firstName = gdd.thisPerson.firstName();
+                                        obj.lastName = gdd.thisPerson.lastName();
+                                        obj.email = gdd.thisPerson.email();
+                                        obj.mobileNumber = gdd.thisPerson.mobileNumber();
+                                        obj.portalId = gdd.config.portalId();
+                                        obj.subscribeToPortalNews = true;
+                                        obj.sendPortalNewsViaEmail = true;
+
                                         callApi(
-                                      "Person/QuickCreate",
-                                      "GET",
-                                      { "firstName": gdd.thisPerson.firstName(), "lastName": gdd.thisPerson.lastName(), "email": gdd.thisPerson.email(), "mobileNumber": gdd.thisPerson.mobileNumber(), "portalId": gdd.config.portalId() },
-                                      function (obj) {
-                                          hideLoader()
+                                              "Person/QuickCreate",
+                                              "POST",
+                                              obj,
+                                              function (obj) {
+                                                  hideLoader()
 
-                                          if ($.isArray(obj.gddData)) {
-                                              if (obj.gddData.length > 0) {
-                                                  var theP = obj.gddData[0];
+                                                  gdd.thisPerson.id(obj.gddData.id);
+                                                  gdd.thisPerson.firstName(obj.gddData.firstName);
+                                                  gdd.thisPerson.lastName(obj.gddData.lastName);
 
-                                                  ko.mapping.mergeFromJS(gdd.thisPerson, theP);
+                                                  if (obj.gddData.email) {
+                                                      gdd.thisPerson.email(maskEmail(obj.gddData.email));
+                                                  } else {
+                                                      gdd.thisPerson.email('');
+                                                  }
 
-                                                  gdd.thisPerson.subscribed(true)
+                                                  if (obj.gddData.mobileNumber) {
+                                                      gdd.thisPerson.mobileNumber(maskMobile(obj.gddData.mobileNumber));
+
+                                                  } else {
+                                                      gdd.thisPerson.mobileNumber('');
+
+                                                  }
+
+                                                  gdd.thisPerson.subscribed(obj.gddData.subscribeToPortalNews)
+                                                  gdd.thisPerson.sendEmail(obj.gddData.sendPortalNewsViaEmail)
 
                                                   localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
 
                                                   gdd.pages.person.view.status = 1;
                                                   gdd.pages.person.view.callback()
 
-                                              } else {
-                                                  showErrMsg("The response recieved from the server has been tampered with. Please contact your church/ministry office.")
-                                              }
-                                          } else {
-                                              showErrMsg("The response recieved from the server has been tampered with. Please contact your church/ministry office.")
-                                          }
 
-                                      },
-                                      function (msg) {
-                                          hideLoader()
-                                          showErrMsg(msg)
-                                      })
+                                              },
+                                              function (msg) {
+                                                  hideLoader()
+                                                  showErrMsg(msg)
+                                              })
 
                                     } else {
 
@@ -2824,14 +2980,21 @@ window.gdd = function () {
 
                                             showLoader("Subscribing...")
 
+                                            var obj = {}
+                                            obj.personId = gdd.thisPerson.id();
+                                            obj.portalId = gdd.config.portalId();
+                                            obj.subscribe = true;
+                                            obj.sendEmail = true;
+
                                             callApi(
-                                               "News/SubscribePersonToField",
-                                               "GET",
-                                               { "personId": gdd.thisPerson.id() },
+                                               "News/UpdatePersonPortalNewsSubscription",
+                                               "POST",
+                                               obj,
                                                function (obj) {
                                                    hideLoader()
 
-                                                   gdd.thisPerson.subscribed(true)
+                                                   gdd.thisPerson.subscribed(obj.gddData.subscribe)
+                                                   gdd.thisPerson.sendEmail(obj.gddData.sendEmail)
 
                                                    localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
                                                    gdd.pages.person.view.status = 1;
@@ -2858,19 +3021,27 @@ window.gdd = function () {
 
 
                             $("#btnFindAnotherAccountPgPersonalInfo").off().on(userClick, function () {
-                                gdd.pages.person.view.action = 1;
-                                $("#popupPersonsActionMenu").popup("close")
+                                localStorage.removeItem(thisPersonLocalStoreKey)
+                                gdd.thisPerson.id(-1)
+                                gdd.thisPerson.firstName('')
+                                gdd.thisPerson.lastName('')
+                                gdd.thisPerson.email('')
+                                gdd.thisPerson.mobileNumber('')
+                                gdd.thisPerson.subscribed(false)
+                                gdd.thisPerson.sendEmail(false)
+                                gdd.deviceId = null;
+
+                                localStorage.removeItem(deviceIdKey)
+
+                                showFindAccount()
                             });
 
                             $("#btnCancelPgPersonalInfo").off().on(userClick, function () {
-                                gdd.pages.person.view.action = 2;
-                                $("#popupPersonsActionMenu").popup("close")
+                                gdd.pages.person.view.status = 2;
+                                gdd.pages.person.view.callback()
                             });
 
-                            $("#btnClosePgPersonalInfo").off().on(userClick, function () {
-                                gdd.pages.person.view.action = 3;
-                                $("#popupPersonsActionMenu").popup("close")
-                            });
+                          
 
                         }
                         init()

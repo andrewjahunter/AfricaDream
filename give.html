@@ -298,6 +298,21 @@
 
                     
 
+                <div data-role="popup" id="popupGiveAgree" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width: 400px;">
+                    <div data-role="header" data-theme="b">
+                        <h1>Agree</h1>
+                    </div>
+                    <div role="main" class="ui-content ui-body-a">
+                        <p data-bind="html:pledgeTemplate.agreeTo"></p>
+                       
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" id="btnGiveIAgree">Agree</a>
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" id="btnGiveNotAgree">Not Agree</a>
+
+                    </div>
+                </div>
+
+
+
                 <div data-role="popup"  id="popupPledgeThankYouMessage" data-overlay-theme="b" data-theme="c" data-dismissible="false" style="max-width: 400px">
                     <div data-role="header" data-theme="c">
                         <h1 >Success</h1>
