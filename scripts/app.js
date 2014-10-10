@@ -63,8 +63,8 @@ window.gdd = function () {
     var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0" }
     var baseUrl = function () {
         //return "http://localhost/webapi2/api/"
-        return "http://192.168.0.2/webapi2/api/"
-        // return "http://api.gododata.com/newsapi/api/"
+        //return "http://192.168.0.2/webapi2/api/"
+         return "http://api.gododata.com/newsapi/api/"
     }
 
     //return an object with the unix date and display date attached. If daysAdd is nul then then
@@ -1628,8 +1628,8 @@ window.gdd = function () {
                             $("#btnShareNewsItem").off().on(userTap, function () {
                                 if (isNative()) {
                                     var msg = ""
-                                    if (gdd.selectedNewsItem.url()) {
-                                        msg = "I would like to share the news story with you. " + gdd.selectedNewsItem.url()
+                                    if (gdd.pages.news.view.selectedNewsItem.url()) {
+                                        msg = "I would like to share the news story with you. " + gdd.pages.news.view.selectedNewsItem.url()
                                     } else {
                                         msg = "I would like to share the news story with you....(fill in the rest here)"
 
