@@ -1629,9 +1629,9 @@ window.gdd = function () {
                                 if (isNative()) {
                                     var msg = ""
                                     if (gdd.pages.news.view.selectedNewsItem.url()) {
-                                        msg = "I would like to share the news story with you. " + gdd.pages.news.view.selectedNewsItem.url()
+                                        msg = gdd.pages.news.view.selectedNewsItem.tagLine() + ' (' + gdd.pages.news.view.selectedNewsItem.url() + ')'
                                     } else {
-                                        msg = "I would like to share the news story with you....(fill in the rest here)"
+                                        msg = gdd.pages.news.view.selectedNewsItem.tagLine()
 
                                     }
 
