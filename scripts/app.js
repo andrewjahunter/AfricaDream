@@ -63,7 +63,7 @@ window.gdd = function () {
     var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0.0" }
     var baseUrl = function () {
         //return "http://localhost/webapi2/api/"
-        //return "http://192.168.0.2/webapi2/api/"
+      //  return "http://192.168.0.2/webapi2/api/"
          return "http://api.gododata.com/newsapi/api/"
     }
 
@@ -714,20 +714,7 @@ window.gdd = function () {
     }
     //#endregion
 
-    //#region GO
-
-    //#endregion
-
-    //#region NEWS/PRAYER
-
-
-  
-
-    
-
-
-
-    //#endregion
+   
 
 
     return {
@@ -937,6 +924,10 @@ window.gdd = function () {
 
                         var init = function () {
 
+                            $("#btnRegisterDB").on(userTap, function () {
+                                loadPage(gdd.pages.getdb, pageTransitionOne)
+
+                            })
 
                         }
 
@@ -973,6 +964,14 @@ window.gdd = function () {
 
                             $("#btnAboutPgHome").on(userTap, function () {
                                 loadPage(gdd.pages.about, pageTransitionOne)
+                            })
+
+                            $("#btnGoToMessagesPgHome").on(userTap, function () {
+
+                                loadPage(gdd.pages.messages, pageTransitionOne)
+
+
+
                             })
 
 
@@ -1280,7 +1279,7 @@ window.gdd = function () {
                     loadNewsItems: function (getFromServer, complete, fail) {
 
                         var reload = false;
-                        var newsChannelKey = "newsChannels"
+                       
 
                         var prepareNewsViewModel = function (newsItems) {
 
@@ -1308,26 +1307,13 @@ window.gdd = function () {
                             reload = true;
 
                         } else {
-                            if (gdd.pages.news.view.countries().length > 0) {
+                            if (gdd.pages.news.view.newsItems().length > 0) {
                                 reload = false;
                                 complete();
                             } else {
-                                var news = localStorage.getItem(newsChannelKey);
 
-                                if (news) {
-
-                                    news = $.parseJSON(news);
-
-                                    if (news.length > 0) {
-                                        prepareNewsViewModel(news);
-                                        reload = false;
-                                        complete()
-                                    } else {
-                                        reload = true;
-                                    }
-                                } else {
-                                    reload = true;
-                                }
+                                reload = true;
+                              
                             }
                         }
 
@@ -1343,7 +1329,7 @@ window.gdd = function () {
 
 
 
-                                               localStorage.removeItem(newsChannelKey)
+                                              
 
                                                var channels = obj.gddData;
 
@@ -1361,9 +1347,7 @@ window.gdd = function () {
                                                    });
                                                });
 
-                                               if (flattenedArray.length > 0) {
-                                                   localStorage.setItem(newsChannelKey, JSON.stringify(flattenedArray));
-                                               }
+                                             
 
                                                prepareNewsViewModel(flattenedArray)
                                            },
@@ -3080,6 +3064,142 @@ window.gdd = function () {
 
 
 
+                    }
+                },
+            },
+
+
+            messages: {
+                id: "pg_messages",
+                path: "messages.html",
+                view: {
+
+                    messages: ko.observableArray(),
+
+                    configureDisplay: function () {
+                        if (gdd.pages.messages.view.messages().length > 0) {
+                            $("#noMessages").hide();
+                            $("#messageItems").fadeIn();
+                           
+                          
+                        } else {
+                            $("#messageItems").hide();
+                            $("#noMessages").fadeIn();
+                            
+                        }
+                    },
+                    getMessages: function (getFromServer, complete, fail) {
+
+                  
+
+                        var reload = false;
+
+
+                        if (getFromServer) {
+                            reload = true;
+
+                        } else {
+                            if (gdd.pages.messages.view.messages().length > 0) {
+                                reload = false;                               
+                                complete();
+                            } else {
+                                reload = true;                               
+                            }
+                        }
+
+                        if (reload) {
+
+                            showLoader("Loading messages...")
+                            callApi(
+                                   "News/GetNewsFlashes",
+                                   "GET",
+                                   { "portalId": gdd.config.portalId(), "channelId": '' },
+                                           function (obj) {
+                                               hideLoader();
+
+                                               gdd.pages.messages.view.messages.removeAll()
+                                               
+
+                                               if ($.isArray(obj.gddData)) {
+                                                   if (obj.gddData.length > 0) {
+                                                      
+
+                                                       $.each(obj.gddData, function (m, msg) {
+                                                           gdd.pages.messages.view.messages.push(msg)
+                                                       });
+
+                                                       
+                                                   }
+                                               }
+
+                                               complete();
+                                           },
+                                           function (msg) {
+                                               hideLoader();
+                                               fail(msg)
+                                           })
+                        }
+
+
+                    },
+
+
+
+                    show: function () {
+
+                       
+
+                        var init = function () {
+
+                            ko.applyBindings(gdd.pages.messages.view, document.getElementById("pg_messages"));
+
+                            $(".refreshMessages").off().on(userTap, function () {
+                               
+                                gdd.pages.messages.view.getMessages(
+                                       true,
+                                       function () {
+                                           gdd.pages.messages.view.configureDisplay();
+                                       },
+                                       function (err) {
+                                           showErrMsg(err)
+                                       })
+                            });
+
+                        }
+                        init()
+
+                        gdd.pages.messages.view.getMessages(
+                                false,
+                                function () {
+                                    gdd.pages.messages.view.configureDisplay();
+                                },
+                                function (err) {
+                                    showErrMsg(err)
+                                })
+                    }
+                },
+            },
+
+
+            getdb: {
+                id: "pg_getdb",
+                path: "getdb.html",
+                view: {
+
+                 
+
+                    show: function () {
+
+
+
+                        var init = function () {
+
+                           
+
+                        }
+                        init()
+
+                       
                     }
                 },
             },
