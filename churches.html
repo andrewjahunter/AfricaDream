@@ -47,8 +47,8 @@
                                 Filter by region
                             </label>
                         </div>-->
-                        <select id="ddlGeoRegion" data-theme="a" data-bind="options: regionsSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Filter by region...'"></select>
-                        <a href="#" class="btnLinkChurchSearchMissingData">My region is not here</a>
+                        <select id="ddlGeoRegion" data-theme="a" data-bind="options: regionsSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Region/Provice...'"></select>
+                        <a href="#" class="btnLinkChurchSearchMissingData">My region/province is not here</a>
                     </div>
 
                     <div class="ui-field-contain churchSearchCity churchSearchFilter" style="display:none">
@@ -57,8 +57,8 @@
                                 Filter by city
                             </label>
                         </div>-->
-                        <select id="ddlGeoCity" data-theme="a" data-bind="options: citiesSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Filter by city...'"></select>
-                        <a href="#" class="btnLinkChurchSearchMissingData">My city is not here</a>
+                        <select id="ddlGeoCity" data-theme="a" data-bind="options: citiesSearch,optionsText:'name',optionsValue:'name',  optionsCaption: 'Area/city/town...'"></select>
+                        <a href="#" class="btnLinkChurchSearchMissingData">My city/area/town is not here</a>
                     </div>
 
                     <button type="button" class="ui-btn ui-btn-b " id="btnFindChurches">Find Churches</button>
@@ -70,8 +70,8 @@
                         <div data-role="navbar">
                             <ul>
                                
-                                <li><button type="button" class="btnLinkChurchSearchMissingData">Can't find my area</button></li>
-                                <li><button type="button"  id="btnResetChurchSearch">Reset</button></li>
+                                <li><button type="button" class="ui-btn ui-btn-d  btnLinkChurchSearchMissingData">LOCATION MISSING?</button></li>
+                                <li><button type="button"  id="btnResetChurchSearch">RESET</button></li>
 
                             </ul>
                         </div><!-- /navbar -->
@@ -188,7 +188,9 @@
 
                         <div data-role="navbar">
                             <ul>
-                                <li><button type="button" class="ui-btn ui-btn-b" id="btnViewAllChurchesOnMap">View results on map</button></li>                             
+                                <li><button type="button" class="ui-btn ui-btn-d btnMyChurchIsMissing" >CHURCH MISSING?</button></li>
+
+                                <li><button type="button" class="ui-btn ui-btn-b" id="btnViewAllChurchesOnMap">MAP VIEW</button></li>                             
 
                             </ul>
                         </div><!-- /navbar -->
@@ -200,7 +202,7 @@
                     <div id='gmapsCanvas' class="gmapsCanvas" style="width: 100%; ">
                         <div style="text-align:center; top:15px">
                             <div>Loading mapping data...</div>
-                            <div><i>()If map does not load, ensure you are connected to the internet or try reload the page)</i></div>
+                            <div><i>If map does not load, ensure you are connected to the internet or try reload the page)</i></div>
                         </div>
 
                     </div>
@@ -208,7 +210,9 @@
 
                         <div data-role="navbar">
                             <ul>
-                                <li><button type="button"  class="ui-btn ui-btn-b  refreshChurchView">List view</button></li>
+                                <li><button type="button" class="ui-btn ui-btn-d  btnMyChurchIsMissing">CHURCH MISSING?</button></li>
+
+                                <li><button type="button"  class="ui-btn ui-btn-b  refreshChurchView">LIST VIEW</button></li>
 
                             </ul>
                         </div><!-- /navbar -->
@@ -225,8 +229,8 @@
                         <ol>
                             <li>
                                 <p>
-                                    Your church may have not been added to the database. Each church is responsible to add their congregation to
-                                    the database. Please contact your church office.
+                                    Each church manages their church info themselves using the Godochurch (www.godochurch.com) data services.
+                                    Your church may not be added to the database.
                                 </p>
                             </li>
                             <li>

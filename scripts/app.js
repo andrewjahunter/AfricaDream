@@ -723,7 +723,10 @@ window.gdd = function () {
                 showErrMsg("Push Services Error: " + err)
             },
             handleMsg: function (msg) {
-                showErrMsg("Push Message:" + msg)
+                if (msg.message) {
+                    showMsg("Push Message: " + msg.message)
+
+                }
             }
         },
         deviceId: null,
@@ -2487,7 +2490,11 @@ window.gdd = function () {
 
                                     ko.applyBindings(gdd, document.getElementById("pg_churches"));
 
+                                    
 
+                                    $(".btnMyChurchIsMissing").off().on(userClick, function () {
+                                        gdd.pages.churches.view.showMissingChurchMessage()
+                                    })
 
                                     $(".btnLinkChurchSearchMissingData").off().on(userClick, function () {
                                         gdd.pages.churches.view.showMissingGeoStructure()
