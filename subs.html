@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Subs</title>
+
+</head>
+<body>
+
+
+
+    <div data-role="page" id="pg_subs">
+        <div class="pageViewContent">
+            <div data-role="header">
+                <a href="#" class="ui-btn ui-btn-b ui-icon-home ui-btn-icon-notext headerMenuHome"></a>
+                <h1>Subscriptions</h1>
+                <a href="#" class="ui-btn ui-btn-b ui-icon-refresh ui-btn-icon-notext refreshSubs "></a>
+            </div><!-- /header -->
+
+            <div role="main" class="ui-content">
+
+                <div id="noSubsItems" style="display:none">
+
+                    <div class="ui-bar ui-bar-h">
+                        <div style="text-align:center">No Subscriptions</div>
+                    </div>
+                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                        There are no live subscriptions connected to this application. To refresh the information in this display click the 'refresh' button at the top of the screen.
+
+                    </div>
+
+                </div>
+
+
+                <div id="subsItems" style="display:none">
+                  
+                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
+                        Below are the churches your profile is subscribed for news and updates.
+
+                    </div>
+
+                    <div data-bind="foreach:subs">
+
+                        <div class="ui-bar ui-bar-a" style="text-align:center" data-bind="html:portalName">
+
+                        </div>
+
+                        <div class="ui-content ui-body-b">
+
+
+                            <div data-bind="visible:subscribed" class="ui-content ui-body-c">
+
+                                <div style="text-align:center">
+                                    <button type="button" class="ui-btn ui-mini ui-btn-inline ui-btn-b btnUnSubscribeFromPortal" data-bind="attr:{'data-id':portalId,'data-name':portalName}">Unsubscribe Me</button>
+                                </div>
+
+                                <div style="text-align:center">
+                                    <small>Email me updates and news</small>
+                                    <div>
+                                        <input type="checkbox" data-role="flipswitch" data-theme="b" data-off-text="X" data-on-text="✓" data-bind="checked:sendEmail,attr:{'data-id':portalId,'data-name':portalName}" class="ui-mini portalSubsFlipSwtch">
+
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <div data-bind="visible:!subscribed" class="ui-content ui-body-h">
+
+                                <div style="text-align:center">
+                                    <button type="button" class="ui-btn ui-btn-inline ui-mini ui-btn-a btnSubscribeToPortal" data-bind="attr:{'data-id':portalId,'data-name':portalName}">Subscribe Me</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+
+                <div data-role="popup" id="popupAddMyChurchNews" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width: 400px;">
+                    <div data-role="header" data-theme="b">
+                        <h3>Add Content</h3>
+                    </div>
+                    <div role="main" class="ui-content ui-body-a">
+                        <p>Simply create a news channel in your Godochurch database and the content will be delivered to this application.</p>
+                        <p>If you do not have an active database please visit start.godochurch.com.</p>
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" data-rel="back">Ok</a>
+
+                    </div>
+                </div>
+
+
+                <div data-role="footer" style="overflow:hidden;" data-position="fixed">
+
+                    <div data-role="navbar">
+                        <ul>
+                        
+
+                            <li><a href="#popupAddMyChurchNews" data-transition="slideup" data-position-to="window" data-rel="popup" class="ui-btn ui-btn-b">How do I get my church's news here</a></li>
+
+                        </ul>
+                    </div><!-- /navbar -->
+                </div><!-- /footer -->
+            </div><!-- /content -->
+
+        </div>
+    </div><!-- /page -->
+</body>
+</html>
+
+
+

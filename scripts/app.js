@@ -63,8 +63,8 @@ window.gdd = function () {
     var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0.0" }
     var baseUrl = function () {
         //return "http://localhost/webapi2/api/"
-      //  return "http://192.168.0.2/webapi2/api/"
-         return "http://api.gododata.com/newsapi/api/"
+        return "http://192.168.0.2/webapi2/api/"
+        //return "http://api.gododata.com/newsapi/api/"
     }
 
     //return an object with the unix date and display date attached. If daysAdd is nul then then
@@ -123,6 +123,7 @@ window.gdd = function () {
     var userTap = "tap"
     var thisPersonLocalStoreKey = "thisperson"
     var gomissionskey = "gomissions"
+
     var deviceIdKey = "deviceid"
 
 
@@ -186,7 +187,7 @@ window.gdd = function () {
             reload = true;
         } else {
 
-            if (gdd.config.portalId()) {
+            if (gdd.config.googleGdcProjectId()) {
                 reload = false;
             } else {
                 var data = localStorage.getItem(configKey);
@@ -194,7 +195,7 @@ window.gdd = function () {
 
                     data = $.parseJSON(data);
 
-                    if (data.portalId) {
+                    if (data.googleGdcProjectId) {
 
                         var today = todayObj()
                         if (data.refreshTime < today.unix) {
@@ -678,11 +679,8 @@ window.gdd = function () {
 
         if (gdd.thisPerson.id() > 0) {
 
-            if (gdd.thisPerson.subscribed()) {
-                return true
-            } else {
-                return false
-            }
+            return true
+
 
         } else {
 
@@ -694,12 +692,8 @@ window.gdd = function () {
                 ko.mapping.mergeFromJS(gdd.thisPerson, thisP);
 
                 if (gdd.thisPerson.id() > 0) {
+                    return true
 
-                    if (gdd.thisPerson.subscribed()) {
-                        return true
-                    } else {
-                        return false
-                    }
                 } else {
                     return false
                 }
@@ -712,9 +706,27 @@ window.gdd = function () {
 
         }
     }
+
+    var clearPersonsData = function () {
+
+        localStorage.removeItem(thisPersonLocalStoreKey)
+        gdd.thisPerson.id(-1)
+        gdd.thisPerson.firstName('')
+        gdd.thisPerson.lastName('')
+        gdd.thisPerson.email('')
+        gdd.thisPerson.mobileNumber('')
+
+        gdd.deviceId = null;
+
+        localStorage.removeItem(deviceIdKey)
+
+
+        localStorage.removeItem(gdd.pages.subs.view.subsKey);
+        gdd.pages.subs.view.subs.removeAll();
+    }
     //#endregion
 
-   
+
 
 
     return {
@@ -724,17 +736,16 @@ window.gdd = function () {
             },
             handleMsg: function (msg) {
                 if (msg.message) {
-                    showMsg("Push Message: " + msg.message)
+                    showMsg(msg.message)
 
                 }
             }
         },
         deviceId: null,
         config: {
-            portalId: ko.observable(null),
-            portalName: ko.observable(null),
+
             refreshTime: ko.observable(null),
-            subsFieldId: ko.observable(''),
+            familyId: ko.observable(''),
             googleGdcProjectId: ko.observable('')
         },
         thisPerson: {
@@ -743,8 +754,6 @@ window.gdd = function () {
             lastName: ko.observable(''),
             email: ko.observable(''),
             mobileNumber: ko.observable(''),
-            subscribed: ko.observable(false),
-            sendEmail: ko.observable(false),
         },
 
 
@@ -936,12 +945,12 @@ window.gdd = function () {
 
                         init()
 
-                        var appCode= headers.appInfo.split("|")[0].split(":")[1];
-                        var version= headers.appInfo.split("|")[1].split(":")[1];
+                        var appCode = headers.appInfo.split("|")[0].split(":")[1];
+                        var version = headers.appInfo.split("|")[1].split(":")[1];
 
-                        $("#aboutVersionInfo").html("App Code: " + appCode + ", Version: " + version )
+                        $("#aboutVersionInfo").html("App Code: " + appCode + ", Version: " + version)
 
-                        
+
                     }
                 },
             },
@@ -953,14 +962,7 @@ window.gdd = function () {
                 view: {
                     show: function () {
 
-                        var displayMissingFieldMsg = function () {
-                            if (gdd.config.portalId()) {
-                                $("#homeAccErrMsg").hide()
-                            } else {
-                                $("#homeAccErrMsg").html("The portal code has not been configured for this app. Please notify the administrator in your church/ministry.")
-                                $("#homeAccErrMsg").show()
-                            }
-                        }
+
 
                         var init = function () {
 
@@ -1139,6 +1141,43 @@ window.gdd = function () {
 
                             })
 
+
+                            $("#btnSubsPgHome").on(userTap, function () {
+
+                                if (accountIsSynced()) {
+                                    loadPage(gdd.pages.subs, pageTransitionOne)
+                                } else {
+                                    showMsg("To access this feature in the application, you need to sync this application to your account.", function () {
+
+                                        gdd.pages.person.view.finishedButtonText = "PROCEED TO 'SUBS'"
+
+                                        gdd.pages.person.view.callback = function () {
+
+                                            if (gdd.pages.person.view.status === 1) {
+                                                if (accountIsSynced()) {
+                                                    loadPage(gdd.pages.subs, pageTransitionOne)
+                                                } else {
+
+                                                    showMsg("We cannot proceed until you have fully setup this application.", function () {
+                                                        loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                                    })
+                                                }
+                                            } else {
+                                                loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                            }
+                                        }
+
+                                        loadPage(gdd.pages.person, pageTransitionOne)
+
+                                    })
+                                }
+
+
+                            })
+
+
+
+
                             $("#btnGoToFindAChurchPgHome").on(userTap, function () {
 
                                 if (gdd.pages.churches.view.geoChurchStructureIsReady) {
@@ -1163,14 +1202,14 @@ window.gdd = function () {
                                     function () {
                                         hideLoader()
                                         window.location.href = 'index.html'
-                                        //displayMissingFieldMsg()
+
 
 
 
                                     },
                                     function (err) {
                                         hideLoader()
-                                        displayMissingFieldMsg()
+
 
                                         showErrMsg(err)
                                     })
@@ -1179,20 +1218,20 @@ window.gdd = function () {
                             $("#btnReloadConfig").on(userTap, function () {
 
 
-                                showLoader("Loading configuration...")
+                                showLoader("Resetting...")
                                 checkConfigData(
                                     true,
                                     function () {
                                         hideLoader()
                                         window.location.href = 'index.html'
-                                        //displayMissingFieldMsg()
+
 
 
 
                                     },
                                     function (err) {
                                         hideLoader()
-                                        displayMissingFieldMsg()
+
 
                                         showErrMsg(err)
                                     })
@@ -1233,7 +1272,13 @@ window.gdd = function () {
                             $("#homeAccNotSynced").show()
                         }
 
-                        displayMissingFieldMsg()
+                        if (gdd.config.familyId() > 0) {
+                            $("#homeAccErrMsg").hide()
+                        } else {
+                            $("#homeAccErrMsg").html("The familyId is not set for this application. Please contact support.").fadeIn();
+                        }
+
+
 
                         if (!gdd.pages.home.geoChurchStructureInitialLoadCalled) {
                             gdd.pages.churches.view.loadGeoChurchStructure(
@@ -1282,7 +1327,7 @@ window.gdd = function () {
                     loadNewsItems: function (getFromServer, complete, fail) {
 
                         var reload = false;
-                       
+
 
                         var prepareNewsViewModel = function (newsItems) {
 
@@ -1316,7 +1361,7 @@ window.gdd = function () {
                             } else {
 
                                 reload = true;
-                              
+
                             }
                         }
 
@@ -1327,12 +1372,12 @@ window.gdd = function () {
                             callApi(
                                    "News/GetPersonsUnreadNewsItems",
                                    "GET",
-                                   { "portalId": gdd.config.portalId(), "personId": gdd.thisPerson.id() },
+                                   { "personId": gdd.thisPerson.id() },
                                            function (obj) {
 
 
 
-                                              
+
 
                                                var channels = obj.gddData;
 
@@ -1350,7 +1395,7 @@ window.gdd = function () {
                                                    });
                                                });
 
-                                             
+
 
                                                prepareNewsViewModel(flattenedArray)
                                            },
@@ -1381,7 +1426,7 @@ window.gdd = function () {
 
 
 
-                     markNewsItemAsRead : function (complete) {
+                    markNewsItemAsRead: function (complete) {
 
                         showLoader("Updating...")
                         callApi(
@@ -1399,16 +1444,16 @@ window.gdd = function () {
                                            }
 
                                            hideLoader();
-                                           
+
                                            complete()
-                                          
+
                                        },
                                        function (msg) {
                                            hideLoader();
                                            showErrMsg(err);
                                            complete()
-                                           
-                                           
+
+
                                        })
 
 
@@ -1423,7 +1468,7 @@ window.gdd = function () {
 
                     setNewsItem: function (next) {
 
-                       
+
 
                         var totalIndexedItems = 0;
                         var currIndex = 0;
@@ -1482,40 +1527,40 @@ window.gdd = function () {
                                 $("#btnShareNewsItem").removeAttr("disabled")
                             }
 
-                             $(".newsItemCount").html(nextIndexItem + 1 + ' of ' + availableItems.length)
+                            $(".newsItemCount").html(nextIndexItem + 1 + ' of ' + availableItems.length)
 
-                             ko.mapping.mergeFromJS(gdd.pages.news.view.selectedNewsItem, nextItem);
-
-
-                             if (gdd.pages.news.view.selectedNewsItem.url()) {
-
-                                 if (isNative()) {
-                                     try {
-
-                                         $(".btnNewsItemWebUrl").attr("href", "#").removeAttr("target")
-                                         $(".btnNewsItemWebUrl").one(userClick, function () {
-                                             try {
-                                                 var inAppBrowser = window.open(gdd.pages.news.view.selectedNewsItem.url(), '_system', 'location=yes,closebuttoncaption=Done/Close');
-                                             }
-                                             catch (e) {
-                                                 showErrMsg("We cannot load the browser on this device: " + e)
-                                             };
-                                         })
-                                         $(".btnNewsItemWebUrl").show();
-                                     }
-                                     catch (e) {
-                                         showErrMsg("We cannot load the browser on this device: " + e)
-                                     }
-                                 } else {
-                                     $(".btnNewsItemWebUrl").attr("href", gdd.pages.news.view.selectedNewsItem.url()).attr("target", "_blank")
-                                     $(".btnNewsItemWebUrl").show();
-                                 }
-                             } else {
-                                 $(".btnNewsItemWebUrl").hide();
-                             }
+                            ko.mapping.mergeFromJS(gdd.pages.news.view.selectedNewsItem, nextItem);
 
 
-                             
+                            if (gdd.pages.news.view.selectedNewsItem.url()) {
+
+                                if (isNative()) {
+                                    try {
+
+                                        $(".btnNewsItemWebUrl").attr("href", "#").removeAttr("target")
+                                        $(".btnNewsItemWebUrl").one(userClick, function () {
+                                            try {
+                                                var inAppBrowser = window.open(gdd.pages.news.view.selectedNewsItem.url(), '_system', 'location=yes,closebuttoncaption=Done/Close');
+                                            }
+                                            catch (e) {
+                                                showErrMsg("We cannot load the browser on this device: " + e)
+                                            };
+                                        })
+                                        $(".btnNewsItemWebUrl").show();
+                                    }
+                                    catch (e) {
+                                        showErrMsg("We cannot load the browser on this device: " + e)
+                                    }
+                                } else {
+                                    $(".btnNewsItemWebUrl").attr("href", gdd.pages.news.view.selectedNewsItem.url()).attr("target", "_blank")
+                                    $(".btnNewsItemWebUrl").show();
+                                }
+                            } else {
+                                $(".btnNewsItemWebUrl").hide();
+                            }
+
+
+
                         } else {
 
                             gdd.pages.news.view.selectedNewsItem.id(-1)
@@ -1544,7 +1589,7 @@ window.gdd = function () {
                                     function () {
                                         gdd.pages.news.view.setNewsItem(true)
 
-                                       // $(".selectedItemView").show()
+                                        // $(".selectedItemView").show()
                                         if (gdd.pages.news.view.selectedNewsItem.id() > 0) {
                                             gdd.pages.news.view.showSelectedItemView();
                                         } else {
@@ -1557,7 +1602,7 @@ window.gdd = function () {
                                         showErrMsg(err)
                                     });
 
-                               
+
                             })
 
                             $(".btnNextNewsItem").off().on(userTap, function () {
@@ -1607,7 +1652,7 @@ window.gdd = function () {
                                             function (err) {
                                                 showErrMsg(err)
                                             });
-                                    } 
+                                    }
                                 })
                             });
 
@@ -1831,9 +1876,9 @@ window.gdd = function () {
                             $("#btnUpdatePledge").off().on(userTap, function () {
 
 
-                               
 
-                                $("#popupGiveAgree").popup("open", {"transition":"pop"})
+
+                                $("#popupGiveAgree").popup("open", { "transition": "pop" })
 
 
                             });
@@ -1943,7 +1988,7 @@ window.gdd = function () {
                             });
                             $("#btnGiveNotAgree").off().on(userTap, function () {
                                 $("#popupGiveAgree").one("popupafterclose", function () {
-                                   showMsg("You must agree to the terms and conditions before we can process this request.")
+                                    showMsg("You must agree to the terms and conditions before we can process this request.")
                                 })
 
                                 $("#popupGiveAgree").popup("close")
@@ -2090,7 +2135,7 @@ window.gdd = function () {
                             callApi(
                                    "News/GetPersonsMissionProfiles",
                                    "GET",
-                                   { "portalId": gdd.config.portalId(), "personId": gdd.thisPerson.id() },
+                                   {"familyId": gdd.config.familyId() , "personId": gdd.thisPerson.id() },
                                            function (obj) {
                                                hideLoader();
 
@@ -2166,6 +2211,262 @@ window.gdd = function () {
                     }
                 },
             },
+            subs: {
+                id: "pg_subs",
+                path: "subs.html",
+                view: {
+                    subsKey: "subsKey",
+                    subs: ko.observableArray(),
+
+
+                    getSubsProfile: function (getFromServer, complete, fail) {
+
+                        var updateSubsBinding = function () {
+                            $(".portalSubsFlipSwtch").flipswitch();
+                            $(".portalSubsFlipSwtch").flipswitch("refresh")
+
+
+                            var togglePortalSubs = function (portalId,portalName, subscribe, sendEmail, loadingText) {
+
+                                showLoader(loadingText)
+
+                                var obj = {}
+                                obj.personId = gdd.thisPerson.id();
+                                obj.portalId = portalId;
+                                obj.subscribed = subscribe;
+                                obj.sendEmail = sendEmail;
+                                obj.portalName = portalName;
+
+                                callApi(
+                                   "News/UpdatePersonPortalNewsSubscription",
+                                   "POST",
+                                   obj,
+                                   function (result) {
+                                       hideLoader()
+
+                                       var arr = $.grep(gdd.pages.subs.view.subs(), function (elem, i) {
+                                           return elem.portalId == portalId;
+                                       })
+
+                                       var idx = gdd.pages.subs.view.subs.indexOf(arr[0])
+                                       gdd.pages.subs.view.subs.splice(idx,1)
+                                       gdd.pages.subs.view.subs.splice(idx, 0,obj)
+
+
+                                       updateSubsBinding();
+
+                                       localStorage.setItem(gdd.pages.subs.view.subsKey, JSON.stringify(gdd.pages.subs.view.subs()));
+
+                                       hideLoader()
+                                   },
+                                   function (msg) {
+                                       hideLoader()
+                                       showErrMsg(msg)
+                                   })
+
+
+
+
+                            }
+
+                            $(".btnSubscribeToPortal").on(userClick, function () {
+                                var portalId = $(this).attr("data-id")
+                                var portalName = $(this).attr("data-name")
+                                togglePortalSubs(portalId,portalName, true, true, "Subscribing...")
+                                // toggleMissionAttendance(missionId, false)
+
+                            })
+
+                            $(".btnUnSubscribeFromPortal").on(userClick, function () {
+                                var portalId = $(this).attr("data-id")
+                                var portalName = $(this).attr("data-name")
+
+                                togglePortalSubs(portalId,portalName, false, false, "Unsubscribing...")
+                                // toggleMissionAttendance(missionId, false)
+
+                            })
+
+
+
+                            $(".portalSubsFlipSwtch").on("change", function () {
+                                var portalId = $(this).attr("data-id")
+                                var portalName = $(this).attr("data-name")
+                                var sendEmail = $(this).prop("checked")
+
+                                if (sendEmail) {
+                                    togglePortalSubs(portalId, portalName, true, sendEmail, "Adding email...")
+
+                                } else {
+                                    togglePortalSubs(portalId, portalName, true, sendEmail, "Removing email...")
+
+                                }
+                               
+
+                            })
+
+                        }
+
+                        var reload = false;
+
+
+                        if (getFromServer) {
+                            reload = true;
+
+                        } else {
+                            if (gdd.pages.subs.view.subs().length > 0) {
+                                reload = false;
+                                updateSubsBinding()
+                                complete();
+                            } else {
+                                var cacheSubs = localStorage.getItem(gdd.pages.subs.view.subsKey);
+
+                                if (cacheSubs) {
+
+                                    cacheSubs = $.parseJSON(cacheSubs);
+
+                                    if (cacheSubs.length > 0) {
+                                        reload = false;
+
+                                        gdd.pages.subs.view.subs.removeAll()
+                                        $.each(cacheSubs, function (s, sub) {
+                                            gdd.pages.subs.view.subs.push(sub)
+                                        });
+
+                                        updateSubsBinding()
+                                        complete()
+                                    } else {
+                                        reload = true;
+                                    }
+                                } else {
+                                    reload = true;
+                                }
+                            }
+                        }
+
+                        if (reload) {
+
+                            showLoader("Loading subs profile...")
+                            callApi(
+                                   "News/GetPersonsSubsProfile",
+                                   "GET",
+                                   { "personId": gdd.thisPerson.id() },
+                                           function (obj) {
+                                               hideLoader();
+
+                                               gdd.pages.subs.view.subs.removeAll()
+                                               localStorage.removeItem(gdd.pages.subs.view.subsKey);
+
+                                               if ($.isArray(obj.gddData)) {
+                                                   if (obj.gddData.length > 0) {
+                                                       var subsCache = obj.gddData;
+
+                                                       localStorage.setItem(gdd.pages.subs.view.subsKey, JSON.stringify(subsCache));
+
+                                                       $.each(subsCache, function (s, sub) {
+                                                           gdd.pages.subs.view.subs.push(sub)
+                                                       });
+
+                                                       updateSubsBinding()
+                                                   }
+                                               }
+
+                                               complete();
+                                           },
+                                           function (msg) {
+                                               hideLoader();
+                                               fail(msg)
+                                           })
+                        }
+
+
+                    },
+
+
+
+                    show: function () {
+
+
+
+                        if (accountIsSynced()) {
+
+
+                            var configureSubsDisplay = function () {
+
+                                if (gdd.pages.subs.view.subs().length > 0) {
+                                    $("#noSubsItems").hide()
+                                    $("#subsItems").fadeIn()
+                                } else {
+                                    $("#subsItems").hide()
+                                    $("#noSubsItems").fadeIn()
+                                }
+                            }
+
+                            var init = function () {
+
+                                ko.applyBindings(gdd.pages.subs.view, document.getElementById("pg_subs"));
+
+                                $(".refreshSubs").off().on(userTap, function () {
+                                    gdd.pages.subs.view.getSubsProfile(
+                                           true,
+                                           function () {
+                                               configureSubsDisplay()
+                                           },
+                                           function (err) {
+                                               showErrMsg(err)
+                                           })
+                                });
+
+                            }
+                            init()
+
+                            gdd.pages.subs.view.getSubsProfile(
+                                false,
+                                function () {
+                                    configureSubsDisplay()
+                                },
+                                function (err) {
+                                    showErrMsg(err)
+                                })
+
+
+
+
+                        } else {
+                            showMsg("To access this feature in the application, you need to sync this application to your account.", function () {
+
+                                gdd.pages.person.view.finishedButtonText = "PROCEED TO 'SUBS'"
+
+                                gdd.pages.person.view.callback = function () {
+
+                                    if (gdd.pages.person.view.status === 1) {
+                                        if (accountIsSynced()) {
+                                            loadPage(gdd.pages.subs, pageTransitionOne)
+                                        } else {
+
+                                            showMsg("We cannot proceed until you have fully setup this application.", function () {
+                                                loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                            })
+                                        }
+                                    } else {
+                                        loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                    }
+                                }
+
+                                loadPage(gdd.pages.person, pageTransitionOne)
+
+                            })
+                        }
+
+
+
+
+
+                    }
+                },
+            },
+
+
+
             churches: {
                 id: "pg_churches",
                 path: "churches.html",
@@ -2174,7 +2475,7 @@ window.gdd = function () {
                         country: ko.observable(''),
                         region: ko.observable(''),
                         city: ko.observable(''),
-                        portalId: ko.observable(''),
+                        familyId: ko.observable(''),
                     },
                     latLng: new Array(),
                     geoChurchStructureKey: "geochurchstructure",
@@ -2416,7 +2717,7 @@ window.gdd = function () {
 
 
 
-                        gdd.pages.churches.view.myChurchQry.portalId(gdd.config.portalId())
+                        gdd.pages.churches.view.myChurchQry.familyId(gdd.config.familyId())
 
                         callApi(
                             "RefData/SearchCongregations",
@@ -2490,7 +2791,7 @@ window.gdd = function () {
 
                                     ko.applyBindings(gdd, document.getElementById("pg_churches"));
 
-                                    
+
 
                                     $(".btnMyChurchIsMissing").off().on(userClick, function () {
                                         gdd.pages.churches.view.showMissingChurchMessage()
@@ -2657,7 +2958,7 @@ window.gdd = function () {
                 id: "pg_person",
                 path: "person.html",
                 view: {
-                   
+
                     callback: null,
                     finishedButtonText: '',
                     status: 1, //1-done,2-cancelled
@@ -2665,15 +2966,15 @@ window.gdd = function () {
 
                         var showFindAccount = function () {
                             $.when($(".personSubView").not(".personTryFindView").hide()).then(function () {
-                               
+
                                 $(".personTryFindView").fadeIn();
                             })
                         }
 
                         var showAccountInfo = function () {
                             $.when($(".personSubView").not(".personInfoView").hide()).then(function () {
-                                $("#sendEmailCheckBox").hide()
-                             
+
+
                                 $(".pInfoInput").removeAttr("disabled")
 
                                 if (gdd.thisPerson.id()) {
@@ -2684,9 +2985,7 @@ window.gdd = function () {
 
                                         $(".pInfoInput").attr("disabled", "disabled")
 
-                                        if (accountIsSynced()) {
-                                            $("#sendEmailCheckBox").show()
-                                        }
+
 
                                     } else {
                                         $(".pInfoSynced").hide()
@@ -2700,7 +2999,7 @@ window.gdd = function () {
 
                                 $(".personInfoView").fadeIn();
 
-                                $("#chkBoxSendNIToEmail").checkboxradio("refresh");
+
                             })
                         }
 
@@ -2770,47 +3069,10 @@ window.gdd = function () {
                             }
 
 
-                            $("#chkBoxSendNIToEmail").off().on("change", function () {
-                                var check = $("#chkBoxSendNIToEmail").prop("checked");
 
-                                if (check) {
-                                    showLoader("Subscribing email...")
-
-                                } else {
-                                    showLoader("Removing email...")
-
-                                }
-
-                                var obj = {}
-                                obj.personId = gdd.thisPerson.id();
-                                obj.portalId = gdd.config.portalId();
-                                obj.subscribe = true;
-                                obj.sendEmail = check;
-
-                                callApi(
-                                   "News/UpdatePersonPortalNewsSubscription",
-                                   "POST",
-                                   obj,
-                                   function (obj) {
-                                       hideLoader()
-
-                                       gdd.thisPerson.subscribed(obj.gddData.subscribe)
-                                       gdd.thisPerson.sendEmail(obj.gddData.sendEmail)
-
-                                       localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
-                                       gdd.pages.person.view.status = 1;
-                                       gdd.pages.person.view.callback()
-
-                                   },
-                                   function (msg) {
-                                       hideLoader()
-                                       showErrMsg(msg)
-                                   })
-                            });
 
                             $("#btnCheckForAccount").off().on(userTap, function () {
-                                gdd.thisPerson.subscribed(false);
-                                gdd.thisPerson.sendEmail(false);
+                                clearPersonsData();
                                 var isValid = true;
 
                                 var input = $("#txtPInfoFindAccount").val()
@@ -2865,8 +3127,7 @@ window.gdd = function () {
 
 
                                                     ko.mapping.mergeFromJS(gdd.thisPerson, theP);
-                                                    gdd.thisPerson.subscribed(false);
-                                                    gdd.thisPerson.sendEmail(false);
+
                                                     localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)));
                                                 }
                                             }
@@ -2877,7 +3138,7 @@ window.gdd = function () {
                                             } else {
                                                 $("#popupCantFindPInfo").popup("open", { "transition": "pop" })
 
-                                               
+
                                             }
 
                                             hideLoader()
@@ -2896,7 +3157,7 @@ window.gdd = function () {
 
                             })
 
-                            
+
                             $("#btnCantFindInfoAdd").off().on(userTap, function () {
 
                                 $("#popupCantFindPInfo").one("popupafterclose", function (event, ui) {
@@ -2908,7 +3169,7 @@ window.gdd = function () {
                             })
 
                             $("#btnCantFindInfoTryAgain").off().on(userTap, function () {
-
+                                
                                 $("#popupCantFindPInfo").popup("close")
 
                             })
@@ -2919,7 +3180,7 @@ window.gdd = function () {
 
                             })
 
-                           
+
 
                             $("#btnOKPgPersonalInfo").off().on(userTap, function () {
 
@@ -2935,9 +3196,8 @@ window.gdd = function () {
                                         obj.lastName = gdd.thisPerson.lastName();
                                         obj.email = gdd.thisPerson.email();
                                         obj.mobileNumber = gdd.thisPerson.mobileNumber();
-                                        obj.portalId = gdd.config.portalId();
-                                        obj.subscribeToPortalNews = true;
-                                        obj.sendPortalNewsViaEmail = true;
+                                        obj.addToDb = false;
+
 
                                         callApi(
                                               "Person/QuickCreate",
@@ -2964,9 +3224,6 @@ window.gdd = function () {
 
                                                   }
 
-                                                  gdd.thisPerson.subscribed(obj.gddData.subscribeToPortalNews)
-                                                  gdd.thisPerson.sendEmail(obj.gddData.sendPortalNewsViaEmail)
-
                                                   localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
 
                                                   gdd.pages.person.view.status = 1;
@@ -2981,42 +3238,12 @@ window.gdd = function () {
 
                                     } else {
 
-                                        if (gdd.thisPerson.subscribed()) {
-                                            localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
-                                            gdd.pages.person.view.status = 1;
-                                            gdd.pages.person.view.callback()
-                                        } else {
-
-                                            showLoader("Subscribing...")
-
-                                            var obj = {}
-                                            obj.personId = gdd.thisPerson.id();
-                                            obj.portalId = gdd.config.portalId();
-                                            obj.subscribe = true;
-                                            obj.sendEmail = true;
-
-                                            callApi(
-                                               "News/UpdatePersonPortalNewsSubscription",
-                                               "POST",
-                                               obj,
-                                               function (obj) {
-                                                   hideLoader()
-
-                                                   gdd.thisPerson.subscribed(obj.gddData.subscribe)
-                                                   gdd.thisPerson.sendEmail(obj.gddData.sendEmail)
-
-                                                   localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
-                                                   gdd.pages.person.view.status = 1;
-                                                   gdd.pages.person.view.callback()
+                                        localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
+                                        gdd.pages.person.view.status = 1;
+                                        gdd.pages.person.view.callback()
 
 
-                                               },
-                                               function (msg) {
-                                                   hideLoader()
-                                                   showErrMsg(msg)
-                                               })
-
-                                        }
+                                       
 
                                     }
 
@@ -3030,17 +3257,8 @@ window.gdd = function () {
 
 
                             $("#btnFindAnotherAccountPgPersonalInfo").off().on(userClick, function () {
-                                localStorage.removeItem(thisPersonLocalStoreKey)
-                                gdd.thisPerson.id(-1)
-                                gdd.thisPerson.firstName('')
-                                gdd.thisPerson.lastName('')
-                                gdd.thisPerson.email('')
-                                gdd.thisPerson.mobileNumber('')
-                                gdd.thisPerson.subscribed(false)
-                                gdd.thisPerson.sendEmail(false)
-                                gdd.deviceId = null;
-
-                                localStorage.removeItem(deviceIdKey)
+                                clearPersonsData();
+                               
 
                                 showFindAccount()
                             });
@@ -3050,7 +3268,7 @@ window.gdd = function () {
                                 gdd.pages.person.view.callback()
                             });
 
-                          
+
 
                         }
                         init()
@@ -3087,17 +3305,17 @@ window.gdd = function () {
                         if (gdd.pages.messages.view.messages().length > 0) {
                             $("#noMessages").hide();
                             $("#messageItems").fadeIn();
-                           
-                          
+
+
                         } else {
                             $("#messageItems").hide();
                             $("#noMessages").fadeIn();
-                            
+
                         }
                     },
                     getMessages: function (getFromServer, complete, fail) {
 
-                  
+
 
                         var reload = false;
 
@@ -3107,10 +3325,10 @@ window.gdd = function () {
 
                         } else {
                             if (gdd.pages.messages.view.messages().length > 0) {
-                                reload = false;                               
+                                reload = false;
                                 complete();
                             } else {
-                                reload = true;                               
+                                reload = true;
                             }
                         }
 
@@ -3120,22 +3338,22 @@ window.gdd = function () {
                             callApi(
                                    "News/GetNewsFlashes",
                                    "GET",
-                                   { "portalId": gdd.config.portalId(), "channelId": '' },
+                                   { "target": 3, "id": gdd.config.familyId() },
                                            function (obj) {
                                                hideLoader();
 
                                                gdd.pages.messages.view.messages.removeAll()
-                                               
+
 
                                                if ($.isArray(obj.gddData)) {
                                                    if (obj.gddData.length > 0) {
-                                                      
+
 
                                                        $.each(obj.gddData, function (m, msg) {
                                                            gdd.pages.messages.view.messages.push(msg)
                                                        });
 
-                                                       
+
                                                    }
                                                }
 
@@ -3154,14 +3372,14 @@ window.gdd = function () {
 
                     show: function () {
 
-                       
+
 
                         var init = function () {
 
                             ko.applyBindings(gdd.pages.messages.view, document.getElementById("pg_messages"));
 
                             $(".refreshMessages").off().on(userTap, function () {
-                               
+
                                 gdd.pages.messages.view.getMessages(
                                        true,
                                        function () {
@@ -3193,7 +3411,7 @@ window.gdd = function () {
                 path: "getdb.html",
                 view: {
 
-                 
+
 
                     show: function () {
 
@@ -3201,12 +3419,12 @@ window.gdd = function () {
 
                         var init = function () {
 
-                           
+
 
                         }
                         init()
 
-                       
+
                     }
                 },
             },
