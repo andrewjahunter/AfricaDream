@@ -863,7 +863,7 @@ window.gdd = function () {
                                         false,
                                         function () {
                                             $("#indexPageSpinner").hide()
-                                            $("#indexPageStart").fadeIn();
+                                            $(".indexPageStart").fadeIn();
                                         },
                                         function (err) {
                                             $("#indexPageError").show()
@@ -909,7 +909,7 @@ window.gdd = function () {
 
                         init()
 
-                        $("#indexPageStart").hide();
+                        $(".indexPageStart").hide();
                         $("#indexPageError").hide()
 
                         $("#indexPageSpinner").show()
@@ -2974,7 +2974,7 @@ window.gdd = function () {
                 id: "pg_person",
                 path: "person.html",
                 view: {
-
+                    initialSubscribeCalled:false,
                     callback: null,
                     finishedButtonText: '',
                     status: 1, //1-done,2-cancelled
@@ -3088,6 +3088,7 @@ window.gdd = function () {
 
 
                             $("#btnCheckForAccount").off().on(userTap, function () {
+                                gdd.pages.person.view.initialSubscribeCalled = false;
                                 clearPersonsData();
                                 var isValid = true;
 
@@ -3213,6 +3214,7 @@ window.gdd = function () {
                                         obj.email = gdd.thisPerson.email();
                                         obj.mobileNumber = gdd.thisPerson.mobileNumber();
                                         obj.addToDb = false;
+                                        obj.setInitAppSubscriptions = true;
 
 
                                         callApi(
@@ -3240,6 +3242,8 @@ window.gdd = function () {
 
                                                   }
 
+                                                  gdd.pages.person.view.initialSubscribeCalled=true
+
                                                   localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
 
                                                   gdd.pages.person.view.status = 1;
@@ -3254,9 +3258,40 @@ window.gdd = function () {
 
                                     } else {
 
-                                        localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
-                                        gdd.pages.person.view.status = 1;
-                                        gdd.pages.person.view.callback()
+                                        if (gdd.pages.person.view.initialSubscribeCalled) {
+                                            localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
+                                            gdd.pages.person.view.status = 1;
+                                            gdd.pages.person.view.callback()
+                                        } else {
+
+                                            showLoader("Setting subscriptions...")
+
+                                            callApi(
+                                             "News/SetInitialSubscriptionsForApp",
+                                             "GET",
+                                             { "personId": gdd.thisPerson.id() },
+                                             function (obj) {
+                                                 hideLoader()
+
+                                                 gdd.pages.person.view.initialSubscribeCalled = true
+
+
+                                                 localStorage.setItem(thisPersonLocalStoreKey, JSON.stringify(ko.mapping.toJS(gdd.thisPerson)))
+                                                 gdd.pages.person.view.status = 1;
+                                                 gdd.pages.person.view.callback()
+
+                                               
+                                             },
+                                             function (msg) {
+                                                 hideLoader()
+                                                 showErrMsg(msg)
+                                             })
+
+
+
+                                        }
+
+                                       
 
 
                                        
