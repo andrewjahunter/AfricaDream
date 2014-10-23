@@ -23,8 +23,12 @@
                     <div class="ui-bar ui-bar-h">
                         <div style="text-align:center">No Subscriptions</div>
                     </div>
-                    <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
-                        There are no live subscriptions connected to this application. To refresh the information in this display click the 'refresh' button at the top of the screen.
+                    <div class="ui-content ui-body-h" style="font-size:small">
+                        There are no live subscriptions connected to this application.
+                        <p>To refresh the information in this display click the 'refresh' button at the top of the screen.</p><p>
+                            If
+                            there is still no subscriptions available then this is an error. Please notify your church office and have them correct this.
+                        </p>
 
                     </div>
 
@@ -32,7 +36,7 @@
 
 
                 <div id="subsItems" style="display:none">
-                  
+
                     <div class="ui-content ui-body-h" style="text-align: center; font-size:small">
                         Below are the churches you are subscribed to.
 
@@ -45,14 +49,14 @@
                         </div>
 
                         <div class="ui-content ui-body-b">
-
+                            
 
                             <div data-bind="visible:subscribed" class="ui-content ui-body-c">
 
                                 <div style="text-align:center">
-                                    <button type="button" class="ui-btn ui-mini ui-btn-inline ui-btn-b btnUnSubscribeFromPortal" data-bind="attr:{'data-id':portalId,'data-name':portalName}">Unsubscribe Me</button>
+                                    <button type="button" class="ui-btn ui-btn-inline ui-mini ui-btn-b btnUnSubscribeFromPortal" data-bind="attr:{'data-id':portalId,'data-name':portalName}">Unsubscribe Me</button>
                                 </div>
-
+                            
                                 <div style="text-align:center">
                                     <small>Email me updates and news</small>
                                     <div>
@@ -99,9 +103,10 @@
 
                     <div data-role="navbar">
                         <ul>
-                        
+
 
                             <li><a href="#popupAddMyChurchNews" data-transition="slideup" data-position-to="window" data-rel="popup" class="ui-btn ui-btn-b">Where is my church?</a></li>
+                            <li><a href="#" class="ui-btn ui-btn-a btnSubsPray">Pray</a></li>
 
                         </ul>
                     </div><!-- /navbar -->

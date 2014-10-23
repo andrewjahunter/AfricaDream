@@ -1582,6 +1582,10 @@ window.gdd = function () {
 
                             ko.applyBindings(gdd, document.getElementById("pg_news"));
 
+                            $(".btnNewsManageSubs").off().on(userTap, function () {
+                                loadPage(gdd.pages.subs, pageTransitionOne)
+                            });
+
                             $(".refreshNewsItems").off().on(userTap, function () {
 
                                 gdd.pages.news.view.loadNewsItems(
@@ -2272,6 +2276,9 @@ window.gdd = function () {
                             $(".btnSubscribeToPortal").on(userClick, function () {
                                 var portalId = $(this).attr("data-id")
                                 var portalName = $(this).attr("data-name")
+
+                                gdd.pages.news.view.newsItems.removeAll()
+
                                 togglePortalSubs(portalId,portalName, true, true, "Subscribing...")
                                 // toggleMissionAttendance(missionId, false)
 
@@ -2280,6 +2287,8 @@ window.gdd = function () {
                             $(".btnUnSubscribeFromPortal").on(userClick, function () {
                                 var portalId = $(this).attr("data-id")
                                 var portalName = $(this).attr("data-name")
+
+                                gdd.pages.news.view.newsItems.removeAll()
 
                                 togglePortalSubs(portalId,portalName, false, false, "Unsubscribing...")
                                 // toggleMissionAttendance(missionId, false)
@@ -2415,6 +2424,13 @@ window.gdd = function () {
                                                showErrMsg(err)
                                            })
                                 });
+
+                                $(".btnSubsPray").off().on(userTap, function () {
+                                    gdd.pages.news.view.forPrayer = true;
+                                    loadPage(gdd.pages.news, pageTransitionOne)
+                                });
+
+                                
 
                             }
                             init()
