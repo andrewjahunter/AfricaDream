@@ -60,11 +60,11 @@ window.gdd = function () {
     //the thing to change for each news app is the appCode, its waht is used to configure the application
     var pledgeCode = 'africadream'
 
-    var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0.0" }
+    var headers = { "apiKey": "39251c1b-7585-476e-a69f-bbee4d17dd63", "appInfo": "appcode:5001|version:1.0.1" }
     var baseUrl = function () {
         //return "http://localhost/webapi2/api/"
-        return "http://192.168.0.2/webapi2/api/"
-        //return "http://api.gododata.com/newsapi/api/"
+        //return "http://192.168.0.2/webapi2/api/"
+        return "http://api.gododata.com/newsapi/api/"
     }
 
     //return an object with the unix date and display date attached. If daysAdd is nul then then
