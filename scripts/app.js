@@ -1056,54 +1056,191 @@ window.gdd = function () {
 
                             $("#btnGoToGivePgHome").on(userTap, function () {
 
-                                gdd.pages.give.view.loadPledgeTemplate(
-                                    function () {
 
-                                        var proceedFunction = function () {
-                                            gdd.pages.person.view.finishedButtonText = "PROCEED TO 'GIVE'"
+                                var proceedToPledgePage = function () {
 
-                                            gdd.pages.person.view.callback = function () {
+                                    gdd.pages.give.view.loadPledgeTemplate(
+                                   function () {
 
-                                                if (gdd.pages.person.view.status === 1) {
-                                                    if (accountIsSynced()) {
-                                                        loadPage(gdd.pages.give, pageTransitionOne)
-                                                    } else {
+                                       switch (gdd.pages.give.view.pledgeTemplate.redirectToWebUrl()) {
 
-                                                        showMsg("We cannot process any giving until we have all your personal information.", function () {
-                                                            loadPage(gdd.pages.home, pageTransitionOneReverse)
-                                                        })
+                                           case 1: //reditect to url
+                                               $("#btnGiveViaWeb").show();
+                                               $("#btnGiveViaWebCancel").html("Cancel")
 
-                                                    }
-                                                } else {
+                                               if (isNative()) {
+                                                   try {
+
+                                                       $("#btnGiveViaWeb").attr("href", "#").removeAttr("target")
+                                                       $("#btnGiveViaWeb").one(userClick, function () {
+                                                           try {
+                                                               var inAppBrowser = window.open(gdd.pages.give.view.pledgeTemplate.redirectUrl(), '_system', 'location=yes,closebuttoncaption=Done/Close');
+                                                               $("#popupGiveRedirectToWeb").popup("close")
+                                                           }
+                                                           catch (e) {
+                                                               
+                                                               showErrMsg("We cannot load the browser on this device: " + e)
+                                                           };
+                                                       })
+                                                       $("#btnGiveViaWeb").show();
+                                                       $("#popupGiveRedirectMsg").html(gdd.pages.give.view.pledgeTemplate.redirectMsg())
+
+                                                       $("#popupGiveRedirectToWeb").popup("open", { "transition": "pop" })
+                                                   }
+                                                   catch (e) {
+                                                       showErrMsg("We cannot load the browser on this device: " + e)
+                                                   }
+                                               } else {
+                                                   $("#btnGiveViaWeb").attr("href", gdd.pages.give.view.pledgeTemplate.redirectUrl()).attr("target", "_blank")
+                                                   $("#btnGiveViaWeb").show();
+                                                   $("#popupGiveRedirectMsg").html(gdd.pages.give.view.pledgeTemplate.redirectMsg())
+
+                                                   $("#btnGiveViaWeb").one(userTap, function () {
+                                                       $("#popupGiveRedirectToWeb").popup("close")
+
+                                                   });
+
+                                                 
+
+
+                                                   $("#popupGiveRedirectToWeb").popup("open", { "transition": "pop" })
+
+
+                                                  // 
+
+                                               }
+
+
+
+                                               break;
+
+                                           case 2: //show message only
+                                               $("#btnGiveViaWeb").hide();
+                                               $("#btnGiveViaWebCancel").html("Ok")
+                                               $("#popupGiveRedirectMsg").html(gdd.pages.give.view.pledgeTemplate.redirectMsg())
+                                               $("#popupGiveRedirectToWeb").popup("open",{"transition":"pop"})
+                                               break;
+
+                                           default:
+                                               loadPage(gdd.pages.give, pageTransitionOne)
+                                               break;
+
+                                       };
+                                       if (gdd.pages.give.view.pledgeTemplate.redirectToWebUrl()===0) {
+                                           
+                                       } else {
+                                          
+                                       }
+                                       
+
+
+
+
+
+
+
+                                       if (gdd.pages.news.view.selectedNewsItem.url()) {
+
+                                          
+                                       } else {
+                                           $(".btnNewsItemWebUrl").hide();
+                                       }
+
+
+
+
+
+
+                                   },
+                                   function (msg) {
+                                       showMsg(msg)
+                                   },
+                                   function (err) {
+                                       showErrMsg(err)
+                                   })
+
+                                }
+
+
+                                var proceedToAccountPage = function () {
+                                    gdd.pages.person.view.finishedButtonText = "PROCEED"
+
+                                    gdd.pages.person.view.callback = function () {
+
+                                        if (gdd.pages.person.view.status === 1) {
+                                            if (accountIsSynced()) {
+                                                loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                            } else {
+
+                                                showMsg("We cannot process any giving until we have all your personal information.", function () {
                                                     loadPage(gdd.pages.home, pageTransitionOneReverse)
-                                                }
-
+                                                })
 
                                             }
-
-                                            loadPage(gdd.pages.person, pageTransitionOne)
-                                        }
-
-                                        if (accountIsSynced()) {
-                                            showMsg("Please confirm your personal information on the next page.", proceedFunction)
-
                                         } else {
-                                            showMsg("You have not completed the setup of this application.<p>In order to add a pledge you are required to fully configure this application with you personal information.</p>", proceedFunction)
-
+                                            loadPage(gdd.pages.home, pageTransitionOneReverse)
                                         }
 
 
+                                    }
+
+                                    loadPage(gdd.pages.person, pageTransitionOne)
+                                }
 
 
 
+                                if (accountIsSynced()) {
+                                    proceedToPledgePage()
 
-                                    },
-                                    function (msg) {
-                                        showMsg(msg)
-                                    },
-                                    function (err) {
-                                        showErrMsg(err)
-                                    })
+                                } else {
+                                    showMsg("You have not completed the setup of this application.<p>In order to add a pledge you are required to fully configure this application with you personal information.</p>", proceedToAccountPage)
+                                 }
+
+
+                                //gdd.pages.give.view.loadPledgeTemplate(
+                                //    function () {
+
+                                //        var proceedFunction = function () {
+                                //            gdd.pages.person.view.finishedButtonText = "PROCEED TO 'GIVE'"
+
+                                //            gdd.pages.person.view.callback = function () {
+
+                                //                if (gdd.pages.person.view.status === 1) {
+                                //                    if (accountIsSynced()) {
+                                //                        loadPage(gdd.pages.give, pageTransitionOne)
+                                //                    } else {
+
+                                //                        showMsg("We cannot process any giving until we have all your personal information.", function () {
+                                //                            loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                //                        })
+
+                                //                    }
+                                //                } else {
+                                //                    loadPage(gdd.pages.home, pageTransitionOneReverse)
+                                //                }
+
+
+                                //            }
+
+                                //            loadPage(gdd.pages.person, pageTransitionOne)
+                                //        }
+
+                                //        if (accountIsSynced()) {
+                                //            showMsg("Please confirm your personal information on the next page.", proceedFunction)
+
+                                //        } else {
+                                //            showMsg("You have not completed the setup of this application.<p>In order to add a pledge you are required to fully configure this application with you personal information.</p>", proceedFunction)
+
+                                //        }
+
+
+                                //    },
+                                //    function (msg) {
+                                //        showMsg(msg)
+                                //    },
+                                //    function (err) {
+                                //        showErrMsg(err)
+                                //    })
 
 
                             })
@@ -1713,6 +1850,9 @@ window.gdd = function () {
                 id: "pg_give",
                 path: "give.html",
                 view: {
+                   
+
+
                     pledgeTemplate: {
                         isActive: ko.observable(false),
                         inActiveReason: ko.observable(''),
@@ -1735,6 +1875,9 @@ window.gdd = function () {
                         frequencies: ko.observableArray(),
                         ccy: ko.observableArray(),
                         accTypes: ko.observableArray(),
+                        redirectMsg: ko.observable(''),
+                        redirectUrl: ko.observable(''),
+                        redirectToWebUrl: ko.observable(false),
                     },
                     myPledge: {
                         personId: ko.observable(-1),
@@ -1765,10 +1908,36 @@ window.gdd = function () {
 
                             showLoader("Configuring giving profile...")
 
+                            //Public Property pledgeCode As String
+                            //Public Property personId As Integer
+                            //''' <summary>
+                            //''' 0-web,1-iOs,2-Android,3-Windows
+                            //''' </summary>
+                            //''' <value></value>
+                            //''' <returns></returns>
+                            //''' <remarks></remarks>
+                            //Public Property platform As Integer '
+
+                            var obj={}
+                            obj.pledgeCode=pledgeCode;
+                            obj.personId=gdd.thisPerson.id();
+
+                            if (isNative()) {
+                                if (device.platform == 'android' || device.platform == 'Android') {
+                                    obj.platform = 2;
+                                } else {
+                                    obj.platform = 1;
+                                }
+                            } else {
+                                obj.platform = 0;
+                            }
+
+                            
+
                             callApi(
                                   "Financial/GetPledgeTemplate",
-                                  "GET",
-                                  { "pledgeCode": pledgeCode },
+                                  "POST",
+                                  obj,
                                           function (obj) {
 
                                               var result = obj.gddData;
